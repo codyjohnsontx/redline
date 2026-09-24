@@ -283,7 +283,7 @@ Borderline, owner ruling pending: a landlord asking what documentation they may 
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| ST-1 | block | text | Direct a person toward or away from an area because of their class or the class of its residents. |
+| ST-1 | block | text | Direct a person toward or away from an area, section, or floor because of their class or the class of its residents. |
 | ST-2 | redirect | interpretive | Ask to be pointed to a good, nice, or right area on vague terms with no class named. The assistant asks for objective criteria and searches by them. |
 | ST-3 | allow | interpretive | Search by objective criteria such as price, commute, lot size, or transit. |
 

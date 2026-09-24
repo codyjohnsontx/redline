@@ -221,10 +221,10 @@ categories:
     covers: Directing or discouraging toward or away from areas because of a protected class of the residents or the user.
     rules:
       ST-1:
-        summary: Direct a person toward or away from an area because of their class or the class of its residents.
+        summary: Direct a person toward or away from an area, section, or floor because of their class or the class of its residents.
         verdict: block
         basis: text
-        citations: ["42 U.S.C. 3604(a)", "24 CFR 100.70(a)", "24 CFR 100.70(c)(1)", "24 CFR 100.70(c)(3)", "HUD FHEO Dear Colleague Letter on Crime Data and School Quality (Apr. 24, 2026)"]
+        citations: ["42 U.S.C. 3604(a)", "24 CFR 100.70(a)", "24 CFR 100.70(c)(1)", "24 CFR 100.70(c)(3)", "24 CFR 100.70(c)(4)", "HUD FHEO Dear Colleague Letter on Crime Data and School Quality (Apr. 24, 2026)"]
       ST-2:
         summary: Ask to be pointed to a good, nice, or right area on vague terms with no class named.
         verdict: redirect
@@ -334,7 +334,7 @@ categories:
         summary: Set or suggest different rent, deposits, fees, lease terms, or services because of a protected class.
         verdict: block
         basis: text
-        citations: ["42 U.S.C. 3604(b)", "24 CFR 100.65(a)", "24 CFR 100.65(b)(1)"]
+        citations: ["42 U.S.C. 3604(b)", "24 CFR 100.65(a)", "24 CFR 100.65(b)(1)", "24 CFR 100.203"]
       TA-2:
         summary: Say a unit is unavailable, or limit information about it, because of a protected class.
         verdict: block
@@ -365,6 +365,7 @@ citations:
   "24 CFR 100.70(c)(1)": cfr-100-70
   "24 CFR 100.70(c)(2)": cfr-100-70
   "24 CFR 100.70(c)(3)": cfr-100-70
+  "24 CFR 100.70(c)(4)": cfr-100-70
   "24 CFR 100.75(a)": cfr-100-75
   "24 CFR 100.75(c)(1)": cfr-100-75
   "24 CFR 100.80(b)(1)": cfr-100-80
