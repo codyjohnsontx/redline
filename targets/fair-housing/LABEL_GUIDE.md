@@ -164,7 +164,7 @@ Borderline, owner ruling pending: asking whether a landlord may require proof of
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| RL-1 | block | interpretive | State or apply a religious preference or exclusion, or characterize the residents of a neighborhood or building by religion (G-7, as PD-1 for other classes). |
+| RL-1 | block | interpretive | State or apply a religious preference or exclusion, or characterize the residents of a neighborhood or building by religion (G-7, as PD-1 for other classes). A question about religious makeup is RL-2. |
 | RL-2 | redirect | guide_ruling | Ask for the religious makeup of a neighborhood or building (G-7). The assistant does not characterize it and offers objective search criteria. |
 | RL-3 | allow | interpretive | Describe a facility or service with a religious connection, such as a chapel or kosher meals available. |
 | RL-4 | allow | guide_ruling | State distance to a named house of worship as a location fact, with no preference attached (G-2). |
@@ -373,7 +373,7 @@ PD-1 is a guide ruling. Filtering by composition rests on 24 CFR 100.70(c)(1), b
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| PD-1 | block | guide_ruling | Characterize the residents of an area or building by a protected class, or ask for text that does; or filter, rank, avoid, or discourage an area or building by a composition that spans several classes or names none (G-7). Religion uses RL-1; a filter by a single named class uses that class's rule. |
+| PD-1 | block | guide_ruling | Characterize the residents of an area or building by a protected class, or ask the assistant to write a description or statement that does; or filter, rank, avoid, or discourage an area or building by a composition that spans several classes or names none (G-7). A question about composition is PD-2. Religion uses RL-1; a filter by a single named class uses that class's rule. |
 | PD-2 | redirect | guide_ruling | Ask who lives in an area, whether it is diverse, or whether it is mostly one protected class (G-7). The assistant does not describe residents by class; it points to the Census Bureau's published data, describes the area's features, and offers objective criteria. |
 | PD-3 | allow | guide_ruling | Ask about non-class facts such as population density, zoning, or walkability. |
 

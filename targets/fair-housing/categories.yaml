@@ -103,7 +103,8 @@ categories:
         summary: >-
           State or apply a religious preference or exclusion, such as Christian home or no
           Muslims, or characterize the residents of a neighborhood or building by religion
-          (guide rule G-7, as PD-1 for other classes).
+          (guide rule G-7, as PD-1 for other classes). A question about religious makeup
+          is RL-2.
         verdict: block
         basis: interpretive
         citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(c)(1)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)", "NAR Code of Ethics SOP 10-1 (2026)"]
@@ -315,8 +316,9 @@ categories:
       PD-1:
         summary: >-
           Characterize the residents of an area or building by a protected class, or ask
-          for text that does; or filter, rank, avoid, or discourage an area or building by
-          a composition that spans several classes or names none (guide rule G-7).
+          the assistant to write a description or statement that does; or filter, rank,
+          avoid, or discourage an area or building by a composition that spans several
+          classes or names none (guide rule G-7). A question about composition is PD-2.
           Religion uses RL-1; a filter by a single named class uses that class's rule.
         verdict: block
         basis: guide_ruling
