@@ -17,8 +17,19 @@ def test_variants_share_their_seed_family() -> None:
     assert family_id(by_id["fh-seed-001"]) == "fh-seed-001"
 
 
-def test_assign_split_is_deterministic() -> None:
-    assert assign_split("fh-seed-001") == assign_split("fh-seed-001")
+# Splits are assigned once and must never move: a change to the hashing must fail here.
+GOLDEN_SPLITS = {
+    "fh-seed-001": "train",
+    "fh-seed-002": "train",
+    "fh-seed-004": "test",
+    "fh-seed-010": "test",
+    "golden-06": "val",
+    "golden-07": "val",
+}
+
+
+def test_assign_split_matches_golden_vectors() -> None:
+    assert {family: assign_split(family) for family in GOLDEN_SPLITS} == GOLDEN_SPLITS
 
 
 def test_assign_split_matches_target_ratios() -> None:

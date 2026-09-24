@@ -68,4 +68,22 @@ def validate_paths(paths: Sequence[Path]) -> ValidationReport:
                     "parent_id must name the root seed",
                 )
             )
+        elif parent.record.source.kind != "seed":
+            report.errors.append(
+                RecordError(
+                    loaded.path,
+                    loaded.line,
+                    f"source.parent_id: {parent_id!r} is a {parent.record.source.kind!r} "
+                    "record, not a seed; parent_id must name the root seed",
+                )
+            )
+        elif parent.record.target != loaded.record.target:
+            report.errors.append(
+                RecordError(
+                    loaded.path,
+                    loaded.line,
+                    f"target: {loaded.record.target!r} does not match target "
+                    f"{parent.record.target!r} of its seed {parent_id!r}",
+                )
+            )
     return report

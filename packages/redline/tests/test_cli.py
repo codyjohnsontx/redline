@@ -112,3 +112,37 @@ def test_validate_reports_invalid_utf8_per_line(
     assert f"{path}:2: invalid UTF-8" in err
     assert f"{path}:1:" not in err
     assert f"{path}:3:" not in err
+
+
+@pytest.mark.parametrize("parent_kind", ["hard_negative", "playground"])
+def test_validate_rejects_parent_that_is_not_a_seed(
+    parent_kind: str, write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _, flip, _ = sample_dicts()
+    parent = {
+        **flip,
+        "id": "fh-root-001",
+        "source": {"kind": parent_kind},
+        "labels": {"provisional": "allow"},
+        "split": None,
+    }
+    child = {**flip, "source": {"kind": "synth", "parent_id": "fh-root-001"}, "split": None}
+    path = write_records([parent, child])
+    assert main(["validate", str(path)]) == 1
+    err = capsys.readouterr().err
+    assert f"{path}:2: source.parent_id: 'fh-root-001' is a {parent_kind!r} record" in err
+    assert f"{path}:1:" not in err
+
+
+def test_validate_rejects_variant_of_another_targets_seed(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    seed, flip, _ = sample_dicts()
+    flip["target"] = "race-engineer"
+    path = write_records([seed, flip])
+    assert main(["validate", str(path)]) == 1
+    err = capsys.readouterr().err
+    assert (
+        f"{path}:2: target: 'race-engineer' does not match target 'fair-housing' "
+        "of its seed 'fh-seed-001'" in err
+    )

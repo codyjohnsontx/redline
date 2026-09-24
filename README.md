@@ -32,7 +32,7 @@ uv run redline validate packages/redline/tests/fixtures/samples.jsonl
 
 It prints `ok` and exits 0 when every record is valid, and otherwise lists each error as `file:line: field: problem` and exits 1. A path that is not a file exits 2.
 
-Files passed together are validated as one dataset, so every `source.parent_id` must name a root seed in one of them.
+Files passed together are validated as one dataset, so every `source.parent_id` must name a seed record of the same target in one of them. CI validates the samples, and all of `targets/*/seeds/*.jsonl` and `targets/*/data/*.jsonl` together.
 
 ## License
 

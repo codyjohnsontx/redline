@@ -29,3 +29,13 @@ jobs:
         run: uv run pytest
       - name: Validate sample records
         run: uv run redline validate packages/redline/tests/fixtures/samples.jsonl
+      - name: Validate target datasets
+        # Seeds and data are validated together so every variant's root seed resolves.
+        run: |
+          shopt -s nullglob
+          files=(targets/*/seeds/*.jsonl targets/*/data/*.jsonl)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "no target dataset files yet"
+          else
+            uv run redline validate "${files[@]}"
+          fi
