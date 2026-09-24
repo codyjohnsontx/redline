@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from redline.datasets.load import LoadedRecord, RecordError, parse_jsonl
-from redline.datasets.splits import family_id, family_split_conflicts
 
 
 @dataclass
@@ -39,17 +38,4 @@ def validate_paths(paths: Sequence[Path]) -> ValidationReport:
             )
         else:
             first_seen[record_id] = loaded
-
-    conflicts = family_split_conflicts(loaded.record for loaded in report.records)
-    for loaded in report.records:
-        family = family_id(loaded.record)
-        if family in conflicts:
-            report.errors.append(
-                RecordError(
-                    loaded.path,
-                    loaded.line,
-                    f"split: family {family!r} spans splits {sorted(conflicts[family])}; "
-                    "all variants of a seed must share one split",
-                )
-            )
     return report

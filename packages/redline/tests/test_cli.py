@@ -59,10 +59,13 @@ def test_validate_rejects_duplicate_ids_across_files(
     assert "duplicate id 'fh-seed-001'" in capsys.readouterr().err
 
 
-def test_validate_rejects_family_split_across_files(
+def test_validate_rejects_split_that_ignores_the_family_hash(
     write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
 ) -> None:
     seed, flip, _ = sample_dicts()
-    flip["split"] = "val"
-    assert main(["validate", str(write_records([seed])), str(write_records([flip]))]) == 1
-    assert "family 'fh-seed-001' spans splits" in capsys.readouterr().err
+    seed["split"] = flip["split"] = "val"
+    seed_path, flip_path = write_records([seed]), write_records([flip])
+    assert main(["validate", str(seed_path), str(flip_path)]) == 1
+    err = capsys.readouterr().err
+    assert f"{seed_path}:1: split 'val' does not match 'train'" in err
+    assert f"{flip_path}:1: split 'val' does not match 'train'" in err

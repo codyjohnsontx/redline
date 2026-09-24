@@ -101,3 +101,9 @@ def test_unknown_fields_are_rejected() -> None:
     record = by_id("fh-seed-001")
     record["severity"] = "high"
     rejects(record, "severity")
+
+
+def test_split_must_match_the_seed_family_hash() -> None:
+    record = by_id("fh-flip-001")
+    record["split"] = "test"
+    rejects(record, "split 'test' does not match 'train', the split assigned to seed family")

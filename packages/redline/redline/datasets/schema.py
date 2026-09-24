@@ -9,9 +9,10 @@ from typing import Annotated, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_validator
 
+from redline.datasets.splits import Split, assign_split, family_id
+
 Direction = Literal["input", "output"]
 Verdict = Literal["allow", "redirect", "block"]
-Split = Literal["train", "val", "test"]
 SourceKind = Literal["seed", "synth", "flip", "hard_negative", "adversarial", "playground"]
 GoldBasis = Literal["owner", "agreement"]
 
@@ -166,4 +167,17 @@ class Record(_Model):
                 raise ValueError("verdict must match the agreed label")
         if self.split in ("train", "val") and labels.gold_basis is None:
             raise ValueError(f"split {self.split!r} holds only gold records; set labels.gold_basis")
+        return self
+
+    @model_validator(mode="after")
+    def _split_fits_family(self) -> Self:
+        if self.split is None:
+            return self
+        family = family_id(self)
+        expected = assign_split(family)
+        if self.split != expected:
+            raise ValueError(
+                f"split {self.split!r} does not match {expected!r}, "
+                f"the split assigned to seed family {family!r}"
+            )
         return self

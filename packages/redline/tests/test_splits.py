@@ -2,7 +2,7 @@ import json
 from collections import Counter
 
 from redline.datasets.schema import Record
-from redline.datasets.splits import assign_split, family_id, family_split_conflicts
+from redline.datasets.splits import assign_split, family_id
 
 from .conftest import sample_dicts
 
@@ -31,10 +31,3 @@ def test_assign_split_matches_target_ratios() -> None:
 def test_samples_carry_their_family_split() -> None:
     for record in samples():
         assert record.split == assign_split(family_id(record))
-
-
-def test_family_split_conflicts_are_reported() -> None:
-    records = samples()
-    assert family_split_conflicts(records) == {}
-    moved = records[1].model_copy(update={"split": "val"})
-    assert family_split_conflicts([records[0], moved]) == {"fh-seed-001": {"train", "val"}}

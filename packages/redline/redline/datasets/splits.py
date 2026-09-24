@@ -5,15 +5,18 @@ family never leaks across train, val, and test.
 """
 
 import hashlib
-from collections.abc import Iterable
+from typing import TYPE_CHECKING, Literal
 
-from redline.datasets.schema import Record, Split
+if TYPE_CHECKING:
+    from redline.datasets.schema import Record
+
+Split = Literal["train", "val", "test"]
 
 # Cumulative upper bounds: 50 percent train, 30 percent val, 20 percent test.
 SPLIT_BOUNDS: tuple[tuple[Split, float], ...] = (("train", 0.5), ("val", 0.8), ("test", 1.0))
 
 
-def family_id(record: Record) -> str:
+def family_id(record: "Record") -> str:
     """The seed a record descends from, or the record itself when it has no parent."""
     return record.source.parent_id or record.id
 
@@ -27,11 +30,3 @@ def assign_split(family: str) -> Split:
             return split
     return SPLIT_BOUNDS[-1][0]
 
-
-def family_split_conflicts(records: Iterable[Record]) -> dict[str, set[Split]]:
-    """Families whose records are spread over more than one split."""
-    seen: dict[str, set[Split]] = {}
-    for record in records:
-        if record.split is not None:
-            seen.setdefault(family_id(record), set()).add(record.split)
-    return {family: splits for family, splits in seen.items() if len(splits) > 1}
