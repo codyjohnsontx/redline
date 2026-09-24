@@ -14,7 +14,7 @@ Work in progress. The evaluation engine is being built first, starting with the 
 
 ## Fair Housing target
 
-The first target lives in [`targets/fair-housing/`](targets/fair-housing/). Its [label guide](targets/fair-housing/LABEL_GUIDE.md) defines twelve categories and the rules every record is labeled by, each rule tied to the statute, regulation, or guidance it rests on; [`categories.yaml`](targets/fair-housing/categories.yaml) holds the same rules and citations as data. The guide is a demonstration against published guidance, not legal advice and not a legal-compliance claim. What each verdict means is recorded in [docs/adr/0001-verdict-semantics.md](docs/adr/0001-verdict-semantics.md).
+The first target lives in [`targets/fair-housing/`](targets/fair-housing/). Its [label guide](targets/fair-housing/LABEL_GUIDE.md) defines twelve categories and the rules that every record with a category points to (`allow` records have category `none` and no rule), each rule tied to the statute, regulation, or guidance it rests on; [`categories.yaml`](targets/fair-housing/categories.yaml) holds the same rules and citations as data. The guide is a demonstration against published guidance, not legal advice and not a legal-compliance claim. What each verdict means is recorded in [docs/adr/0001-verdict-semantics.md](docs/adr/0001-verdict-semantics.md).
 
 ## Development
 

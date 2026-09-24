@@ -12,8 +12,8 @@ Write each seed against [LABEL_GUIDE.md](../LABEL_GUIDE.md). If you cannot pick 
 | `direction` | `input` for a user message; `output` for an assistant reply. |
 | `text` | The user message, or the assistant reply. |
 | `context.user_prompt` | Output seeds only: the user message that produced the reply. Leave `null` for input seeds. |
-| `verdict` | Input: `allow`, `redirect`, or `block`. Output: `allow` or `block`. Take it from the rule (guide section 0.1). |
-| `category` | A category id from the guide, or `none` for an `allow` seed. |
+| `verdict` | Input: the rule's verdict, `allow`, `redirect`, or `block`. Output: `block` only when the reply does what a `block` rule forbids; every other reply, including a correct refusal or redirect, is `allow` (guide section 0.3). |
+| `category` | A category id from the guide, or `none` for an `allow` seed. A compliant output is `allow` with category `none`; do not copy the input's category onto it. Sexual orientation and gender identity seeds are `sex`, even for listing copy (guide section 0.3). |
 | `secondary_categories` | Other category ids the text also touches, or `[]`. |
 | `guide_rule` | The rule id, such as `FS-1`. `null` when the category is `none`. |
 | `citations` | One or more citation strings from the rule, copied exactly as `categories.yaml` lists them. `[]` when the category is `none`. |
@@ -47,8 +47,9 @@ Allow seed (a hard negative):
 
 ## Check before committing
 
-- The rule belongs to the category, its verdict matches the seed's verdict for the direction, and each citation is one the rule lists.
+- Input seed: the rule belongs to the category, its verdict equals the seed's verdict, and each citation is one the rule lists.
+- Output seed: `block` names the `block` rule the reply breaks and cites it; a compliant reply is `allow`, category `none`, `guide_rule: null`, `citations: []`.
 - `labels.provisional` equals `verdict`.
 - The file validates: `uv run redline validate targets/fair-housing/seeds/*.jsonl`. CI runs the same check.
 
-`redline validate` checks the record format. It does not yet check that the category, rule, and citations exist in `categories.yaml`, so the first bullet is on you for now.
+`redline validate` checks the record format. It does not yet check that the category, rule, and citations exist in `categories.yaml`, so the first two bullets are on you for now.

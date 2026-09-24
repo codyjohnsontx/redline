@@ -15,7 +15,9 @@ The test split is not published; see [NOTICE](NOTICE).
 
 When you share or adapt this material, credit it as:
 
-> Redline Fair Housing dataset and label guide, by Cody Johnson, https://github.com/codyjohnsontx/redline, licensed CC BY-NC 4.0.
+> Redline Fair Housing dataset and label guide, by Cody Johnson, https://github.com/codyjohnsontx/redline, licensed [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/). [No changes made. | Modified from the original on YYYY-MM-DD: describe the changes.]
+
+Keep one of the bracketed statements: section 3(a)(1) of the license requires you to indicate whether you modified the material. The link satisfies its requirement to include the license or its URI.
 
 ## Not legal advice
 

@@ -32,8 +32,9 @@ tags:
     as HUD currently enforces it. A federal-statute-only view drops these records.
 
 # `verdict` is the input verdict. The output verdict follows from it: a reply
-# that does what a block rule forbids is `block`; a reply that follows an allow
-# or redirect rule is `allow`. See docs/adr/0001-verdict-semantics.md.
+# that does what a block rule forbids is `block` under that rule; every other
+# reply, including a correct refusal or redirect, is `allow` with category
+# `none` and no rule. See docs/adr/0001-verdict-semantics.md.
 # Every `redirect` rule also has `redirect_to`: the lawful alternative the
 # assistant offers instead, as the guide states it.
 categories:
@@ -102,7 +103,7 @@ categories:
         basis: interpretive
         citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(c)(1)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)"]
       RL-2:
-        summary: Ask for the religious makeup of a neighborhood or building.
+        summary: Ask for the religious makeup of a neighborhood or building (guide rule G-7, as PD-2 for other classes).
         verdict: redirect
         basis: guide_ruling
         redirect_to: Offer objective search criteria. Do not characterize the neighborhood or building by religion.
@@ -128,6 +129,9 @@ categories:
       2025 (the February 2021 OGC Bostock memorandum and the February 2021 FHEO
       Executive Order 13988 memorandum). SX-4 and SX-5 rest on NAR Standard of
       Practice 10-3 and on state law, and their records carry the non_federal tag.
+      A sexual-orientation or gender-identity request is primary sex under SX-4 or
+      SX-5 even when it is listing copy, with advertising_language secondary, so the
+      tag and basis survive.
     rules:
       SX-1:
         summary: State or apply a preference by sex for a separate dwelling unit.
@@ -210,10 +214,17 @@ categories:
         basis: text
         citations: ["42 U.S.C. 3604(f)(3)(A)", "24 CFR 100.203", "HUD/DOJ Joint Statement on Reasonable Modifications (Mar. 5, 2008)"]
       DS-4:
-        summary: Ask, or help ask, whether an applicant has a disability or about its nature or severity.
+        summary: >-
+          Ask, or help ask, whether an applicant has a disability or about its nature or
+          severity, other than the inquiries 24 CFR 100.202(c)(1)-(5) permits when asked of
+          all applicants (ability to meet tenancy or ownership requirements, qualification
+          for disability-only housing or a disability priority, current illegal controlled-substance
+          use or addiction, and a conviction for its illegal manufacture or distribution).
+          Limited verification of a non-obvious disability or disability-related need in
+          response to an accommodation request, as the 2004 Joint Statement describes, is not DS-4.
         verdict: block
         basis: text
-        citations: ["24 CFR 100.202(c)"]
+        citations: ["24 CFR 100.202(c)", "HUD/DOJ Joint Statement on Reasonable Accommodations (May 17, 2004)"]
       DS-5:
         summary: Ask about or describe accessibility features, such as a ramp, elevator, or step-free entry.
         verdict: allow
@@ -292,15 +303,20 @@ categories:
     covers: What kind of people live there, is it diverse, mostly families, young professionals.
     rules:
       PD-1:
-        summary: Characterize, or ask the assistant to characterize, residents by a protected class.
+        summary: >-
+          Filter, rank, avoid, or discourage an area or building because of the protected
+          class of its residents, including a reply that describes residents by class as a
+          reason to choose or avoid it.
         verdict: block
-        basis: interpretive
-        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.70(c)(1)", "NAR Code of Ethics SOP 10-1 (2026)"]
+        basis: text
+        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.70(c)(1)"]
       PD-2:
-        summary: Ask generically who lives in an area or whether it is diverse.
+        summary: >-
+          Ask who lives in an area, whether it is diverse, or whether it is mostly one
+          protected class (guide rule G-7; religion questions use RL-2 the same way).
         verdict: redirect
         basis: guide_ruling
-        redirect_to: Point to the Census Bureau's published data and describe the area's features. Do not describe residents by class.
+        redirect_to: Point to the Census Bureau's published data, describe the area's features, and offer objective criteria. Do not describe residents by class.
         citations: ["24 CFR 100.70(c)(1)", "NAR Code of Ethics SOP 10-1 (2026)"]
       PD-3:
         summary: Ask about non-class facts about an area, such as population density, zoning, or walkability.
@@ -319,9 +335,11 @@ categories:
         basis: text
         citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(a)", "24 CFR 100.75(c)(1)"]
       AD-2:
-        summary: Copy with ambiguous catch words such as exclusive, private, restricted, or traditional.
+        summary: >-
+          Copy with ambiguous catch words such as exclusive, private, restricted, or
+          traditional. A product choice; the Part 109 and 1995 citations are historical context.
         verdict: redirect
-        basis: interpretive
+        basis: guide_ruling
         redirect_to: Offer a rewrite that describes the property instead.
         citations: ["24 CFR 100.75(c)(1)", "Former 24 CFR 109.20 (rescinded 1996)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)"]
       AD-3:

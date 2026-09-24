@@ -7,12 +7,13 @@ The datasets under targets/*/data/ and the label guides at
 targets/*/LABEL_GUIDE.md are licensed under Creative Commons
 Attribution-NonCommercial 4.0 International (DATA_LICENSE.md).
 
-The test split is unpublished. Each target's train and validation splits
-are published in this repository; its test split is held privately and is
-used only to report the numbers on the Redline dashboard. It is identified
-in every published result by its SHA-256 hash, so a result can be tied to
-the exact test set without the test set being released. Please do not
-request it: publishing it would let a judge be tuned to it.
+The test split is unpublished. No dataset splits exist in this repository
+yet. When they do, each target's train and validation splits will be
+published here, and its test split will be held privately and used only to
+report the numbers on the Redline dashboard. Each published result will
+identify the test set by its SHA-256 hash, so the result can be tied to the
+exact test set without the test set being released. Please do not request
+it: publishing it would let a judge be tuned to it.
 
 The label guides are a demonstration against published guidance, not legal
 advice and not a claim of legal compliance.
