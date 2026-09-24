@@ -69,3 +69,21 @@ def test_validate_rejects_split_that_ignores_the_family_hash(
     err = capsys.readouterr().err
     assert f"{seed_path}:1: split 'val' does not match 'train'" in err
     assert f"{flip_path}:1: split 'val' does not match 'train'" in err
+
+
+def test_validate_rejects_parent_that_is_not_a_root_seed(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    seed, flip, _ = sample_dicts()
+    synth = {**flip, "id": "fh-synth-001", "source": {"kind": "synth", "parent_id": "fh-seed-001"}}
+    adversarial = {
+        **flip,
+        "id": "fh-adv-001",
+        "source": {"kind": "adversarial", "parent_id": "fh-synth-001"},
+        "split": None,
+    }
+    path = write_records([seed, synth, adversarial])
+    assert main(["validate", str(path)]) == 1
+    err = capsys.readouterr().err
+    assert f"{path}:3: source.parent_id: 'fh-synth-001' is not a root seed" in err
+    assert f"{path}:2:" not in err

@@ -38,4 +38,18 @@ def validate_paths(paths: Sequence[Path]) -> ValidationReport:
             )
         else:
             first_seen[record_id] = loaded
+
+    for loaded in report.records:
+        parent_id = loaded.record.source.parent_id
+        parent = first_seen.get(parent_id) if parent_id is not None else None
+        if parent is not None and parent.record.source.parent_id is not None:
+            report.errors.append(
+                RecordError(
+                    loaded.path,
+                    loaded.line,
+                    f"source.parent_id: {parent_id!r} is not a root seed "
+                    f"(its parent is {parent.record.source.parent_id!r}); "
+                    "parent_id must name the root seed",
+                )
+            )
     return report

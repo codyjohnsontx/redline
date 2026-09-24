@@ -85,6 +85,23 @@ def test_owner_gold_must_match_record() -> None:
     rejects(record, "must match labels.owner")
 
 
+def test_owner_audit_overrides_agreement() -> None:
+    record = by_id("fh-flip-001")
+    record["labels"]["owner"] = {
+        "verdict": "block",
+        "category": "familial_status",
+        "audited": "2026-09-24",
+    }
+    rejects(record, "labels.owner is present, so labels.gold_basis must be 'owner'")
+
+
+def test_owner_audit_requires_owner_gold_basis() -> None:
+    record = by_id("fh-seed-001")
+    record["labels"]["gold_basis"] = None
+    record["split"] = None
+    rejects(record, "labels.owner is present, so labels.gold_basis must be 'owner'")
+
+
 def test_agreement_requires_labels_to_agree() -> None:
     record = by_id("fh-flip-001")
     record["labels"]["second"]["verdict"] = "redirect"
@@ -92,7 +109,7 @@ def test_agreement_requires_labels_to_agree() -> None:
 
 
 def test_public_splits_hold_only_gold_records() -> None:
-    record = by_id("fh-seed-001")
+    record = by_id("fh-flip-001")
     record["labels"]["gold_basis"] = None
     rejects(record, "holds only gold records")
 

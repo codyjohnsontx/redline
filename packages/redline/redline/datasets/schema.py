@@ -49,6 +49,7 @@ class Context(_Model):
 
 class Source(_Model):
     kind: SourceKind
+    # Always the root seed of the family, never an intermediate variant.
     parent_id: RecordId | None = None
     generator: NonEmpty | None = None
     generator_prompt_sha: NonEmpty | None = None
@@ -149,11 +150,13 @@ class Record(_Model):
     @model_validator(mode="after")
     def _gold_label_matches(self) -> Self:
         labels = self.labels
-        if labels.gold_basis == "owner":
-            if labels.owner is None:
-                raise ValueError("labels.gold_basis 'owner' requires labels.owner")
+        if labels.owner is not None:
+            if labels.gold_basis != "owner":
+                raise ValueError("labels.owner is present, so labels.gold_basis must be 'owner'")
             if (labels.owner.verdict, labels.owner.category) != (self.verdict, self.category):
                 raise ValueError("verdict and category must match labels.owner")
+        elif labels.gold_basis == "owner":
+            raise ValueError("labels.gold_basis 'owner' requires labels.owner")
         elif labels.gold_basis == "agreement":
             second = labels.second
             if second is None:
