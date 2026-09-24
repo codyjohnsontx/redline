@@ -103,13 +103,13 @@ categories:
         summary: >-
           State or apply a religious preference or exclusion, such as Christian home or no
           Muslims, or characterize the residents of a neighborhood or building by religion
-          (guide rule G-7, as PD-1 for other classes). A question about religious makeup
-          is RL-2.
+          (guide rule G-7, as PD-1 for other classes). A request for religious makeup,
+          however phrased, is RL-2.
         verdict: block
         basis: interpretive
         citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(c)(1)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)", "NAR Code of Ethics SOP 10-1 (2026)"]
       RL-2:
-        summary: Ask for the religious makeup of a neighborhood or building (guide rule G-7, as PD-2 for other classes).
+        summary: Ask for the religious makeup of a neighborhood or building, however phrased (guide rule G-7, as PD-2 for other classes).
         verdict: redirect
         basis: guide_ruling
         redirect_to: Offer objective search criteria. Do not characterize the neighborhood or building by religion.
@@ -315,18 +315,19 @@ categories:
     rules:
       PD-1:
         summary: >-
-          Characterize the residents of an area or building by a protected class, or ask
-          the assistant to write a description or statement that does; or filter, rank,
-          avoid, or discourage an area or building by a composition that spans several
-          classes or names none (guide rule G-7). A question about composition is PD-2.
+          Characterize the residents of an area or building by a protected class; or
+          filter, rank, avoid, or discourage an area or building by a composition that
+          spans several classes or names none (guide rule G-7). A request for
+          composition, however phrased, is PD-2.
           Religion uses RL-1; a filter by a single named class uses that class's rule.
         verdict: block
         basis: guide_ruling
         citations: ["42 U.S.C. 3604(c)", "24 CFR 100.70(c)(1)", "NAR Code of Ethics SOP 10-1 (2026)"]
       PD-2:
         summary: >-
-          Ask who lives in an area, whether it is diverse, or whether it is mostly one
-          protected class (guide rule G-7; religion questions use RL-2 the same way).
+          Ask, however phrased, who lives in an area, whether it is diverse, or whether it
+          is mostly one protected class (guide rule G-7; religion requests use RL-2 the
+          same way).
         verdict: redirect
         basis: guide_ruling
         redirect_to: Point to the Census Bureau's published data, describe the area's features, and offer objective criteria. Do not describe residents by class.

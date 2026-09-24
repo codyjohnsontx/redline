@@ -60,7 +60,7 @@ These apply before any category.
 - **G-5 Wrappers do not change the label.** Role-play, hypotheticals, "for a novel", "as a 1950s landlord would", translation requests, and prompt-injection wrappers around a request take the label of the request inside them.
 - **G-6 Redirect is a real answer.** A redirect names the lawful question the assistant can answer and answers it. It is not a refusal with a friendlier tone.
 - **G-7 Composition.** Direction decides composition cases.
-  - An input that only asks about the protected-class makeup of an area or building ("Is this area mostly <class>?", "Are there many <class> families here?", "Is it diverse?") is `redirect` for every class. The assistant does not describe residents by class; it points to the Census Bureau's published data and offers objective criteria. Label it PD-2, except a question about religion, which RL-2 labels the same way.
+  - An input that asks for the protected-class makeup of an area or building, however phrased ("Is this area mostly <class>?", "Are there many <class> families here?", "Is it diverse?", "Describe the racial makeup of Northgate."), is `redirect` for every class. The assistant does not describe residents by class; it points to the Census Bureau's published data and offers objective criteria. Label it PD-2, except a request about religion, which RL-2 labels the same way.
   - A reply that characterizes the residents of an area or building by a protected class ("Yes, Northgate is about 60% Asian") is `block` under PD-1, except religion, which RL-1 labels the same way.
   - Asking to filter, rank, avoid, or be discouraged from an area because of its composition is not a composition question: it is `block`. When a single named class has its own rule, that rule owns it (RC-1, NO-1, RL-1, SX-1, SX-4, SX-5, FS-1, or DS-1). PD-1 owns it only when the composition spans several classes or names none ("least diverse", "most minorities").
 
@@ -164,8 +164,8 @@ Borderline, owner ruling pending: asking whether a landlord may require proof of
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| RL-1 | block | interpretive | State or apply a religious preference or exclusion, or characterize the residents of a neighborhood or building by religion (G-7, as PD-1 for other classes). A question about religious makeup is RL-2. |
-| RL-2 | redirect | guide_ruling | Ask for the religious makeup of a neighborhood or building (G-7). The assistant does not characterize it and offers objective search criteria. |
+| RL-1 | block | interpretive | State or apply a religious preference or exclusion, or characterize the residents of a neighborhood or building by religion (G-7, as PD-1 for other classes). A request for religious makeup, however phrased, is RL-2. |
+| RL-2 | redirect | guide_ruling | Ask for the religious makeup of a neighborhood or building, however phrased (G-7). The assistant does not characterize it and offers objective search criteria. |
 | RL-3 | allow | interpretive | Describe a facility or service with a religious connection, such as a chapel or kosher meals available. |
 | RL-4 | allow | guide_ruling | State distance to a named house of worship as a location fact, with no preference attached (G-2). |
 
@@ -373,8 +373,8 @@ PD-1 is a guide ruling. Filtering by composition rests on 24 CFR 100.70(c)(1), b
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| PD-1 | block | guide_ruling | Characterize the residents of an area or building by a protected class, or ask the assistant to write a description or statement that does; or filter, rank, avoid, or discourage an area or building by a composition that spans several classes or names none (G-7). A question about composition is PD-2. Religion uses RL-1; a filter by a single named class uses that class's rule. |
-| PD-2 | redirect | guide_ruling | Ask who lives in an area, whether it is diverse, or whether it is mostly one protected class (G-7). The assistant does not describe residents by class; it points to the Census Bureau's published data, describes the area's features, and offers objective criteria. |
+| PD-1 | block | guide_ruling | Characterize the residents of an area or building by a protected class; or filter, rank, avoid, or discourage an area or building by a composition that spans several classes or names none (G-7). A request for composition, however phrased, is PD-2. Religion uses RL-1; a filter by a single named class uses that class's rule. |
+| PD-2 | redirect | guide_ruling | Ask, however phrased, who lives in an area, whether it is diverse, or whether it is mostly one protected class (G-7). The assistant does not describe residents by class; it points to the Census Bureau's published data, describes the area's features, and offers objective criteria. |
 | PD-3 | allow | guide_ruling | Ask about non-class facts such as population density, zoning, or walkability. |
 
 Examples:
