@@ -188,8 +188,8 @@ SX-1 to SX-3 rest on the statute. SX-4 and SX-5 do not: HUD's enforcement positi
 | SX-1 | block | text | State or apply a preference by sex for a separate dwelling unit. |
 | SX-2 | allow | interpretive | Physical descriptions that use gendered words. |
 | SX-3 | allow | guide_ruling | Sex preference for a roommate in a unit with shared living space. |
-| SX-4 | block | interpretive, `non_federal` | State or apply a preference or exclusion by sexual orientation. |
-| SX-5 | block | interpretive, `non_federal` | State or apply a preference or exclusion by gender identity. |
+| SX-4 | block | guide_ruling, `non_federal` | State or apply a preference or exclusion by sexual orientation. |
+| SX-5 | block | guide_ruling, `non_federal` | State or apply a preference or exclusion by gender identity. |
 
 Examples:
 
