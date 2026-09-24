@@ -30,7 +30,7 @@ Every dataset record is one JSON object per line, defined in `packages/redline/r
 uv run redline validate packages/redline/tests/fixtures/samples.jsonl
 ```
 
-It prints `ok` and exits 0 when every record is valid, and otherwise lists each error as `file:line: field: problem` and exits 1.
+It prints `ok` and exits 0 when every record is valid, and otherwise lists each error as `file:line: field: problem` and exits 1. A path that is not a file exits 2.
 
 ## License
 
