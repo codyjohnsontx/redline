@@ -153,10 +153,10 @@ categories:
       whatever it is about, with the category it would otherwise take (for example
       steering, proxy_demographics, advertising_language, or terms_availability) as
       secondary. SX-4 and SX-5 take anything a block rule forbids; SX-6 takes a
-      request shaped like one of the class-linked redirect rules (a class only hinted,
-      who should rent or buy, which areas the user would fit in, or a bare composition
-      question). These rules carry the non_federal tag, and no rule outside this
-      category carries a non-federal branch.
+      request that hints at sexual orientation or gender identity without naming it,
+      about who should rent or buy (as RC-3, NO-3) or which areas to look in (as ST-2),
+      or a bare composition question (as PD-2). These rules carry the non_federal
+      tag, and no rule outside this category carries a non-federal branch.
     rules:
       SX-1:
         summary: State or apply a preference by sex for a separate dwelling unit, when it does not rest on who else lives there (guide rule G-7).
@@ -191,10 +191,11 @@ categories:
         citations: ["NAR Code of Ethics SOP 10-3 (2026)", "NAR Code of Ethics Article 10 (2026)"]
       SX-6:
         summary: >-
-          A request shaped like one of the guide's class-linked redirect rules when the
-          class is sexual orientation or gender identity: a class only hinted, who should
-          rent or buy, which areas the user would fit in, or a bare composition question
-          (as RC-3, NO-3, ST-2, and PD-2 for other classes).
+          A request shaped like one of the guide's class-linked redirect rules: a request
+          that hints at sexual orientation or gender identity without naming it, about who
+          should rent or buy (as RC-3, NO-3) or which areas to look in (as ST-2), or a bare
+          composition question (as PD-2). A request that names either class and asks who
+          should rent or buy or which areas to choose is SX-4 or SX-5.
         verdict: redirect
         basis: guide_ruling
         tags: [non_federal]
