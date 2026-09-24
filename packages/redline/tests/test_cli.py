@@ -101,15 +101,6 @@ def test_validate_rejects_parent_missing_from_the_files(
     assert f"{path}:1: source.parent_id: no valid record with id 'fh-seed-01'" in err
 
 
-def test_validate_accepts_partial_file_when_missing_parents_are_allowed(
-    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
-) -> None:
-    _, flip, _ = sample_dicts()
-    path = write_records([flip])
-    assert main(["validate", "--allow-missing-parents", str(path)]) == 0
-    assert "ok: 1 record(s) in 1 file(s)" in capsys.readouterr().out
-
-
 def test_validate_reports_invalid_utf8_per_line(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:

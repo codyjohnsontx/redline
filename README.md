@@ -32,7 +32,7 @@ uv run redline validate packages/redline/tests/fixtures/samples.jsonl
 
 It prints `ok` and exits 0 when every record is valid, and otherwise lists each error as `file:line: field: problem` and exits 1. A path that is not a file exits 2.
 
-Files passed together are validated as one dataset, so every `source.parent_id` must name a root seed in one of them. To check a file of variants without its seeds, add `--allow-missing-parents`.
+Files passed together are validated as one dataset, so every `source.parent_id` must name a root seed in one of them.
 
 ## License
 

@@ -13,11 +13,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     commands = parser.add_subparsers(dest="command", required=True)
     validate = commands.add_parser("validate", help="validate JSONL dataset files")
     validate.add_argument("paths", nargs="+", type=Path, metavar="FILE")
-    validate.add_argument(
-        "--allow-missing-parents",
-        action="store_true",
-        help="accept source.parent_id values not found in FILE (for checking a partial file)",
-    )
     args = parser.parse_args(argv)
 
     paths: list[Path] = args.paths
@@ -26,11 +21,11 @@ def main(argv: Sequence[str] | None = None) -> int:
         for path in missing:
             print(f"{path}: not a file", file=sys.stderr)
         return 2
-    return _validate(paths, allow_missing_parents=args.allow_missing_parents)
+    return _validate(paths)
 
 
-def _validate(paths: list[Path], *, allow_missing_parents: bool) -> int:
-    report = validate_paths(paths, allow_missing_parents=allow_missing_parents)
+def _validate(paths: list[Path]) -> int:
+    report = validate_paths(paths)
     for error in report.errors:
         print(error, file=sys.stderr)
     if not report.ok:
