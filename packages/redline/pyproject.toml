@@ -1,0 +1,17 @@
+[project]
+name = "redline"
+version = "0.1.0"
+description = "Redline evaluation engine: datasets, judges, metrics, and the CI gate"
+license = "MIT"
+requires-python = ">=3.12,<3.13"
+dependencies = ["pydantic>=2.11,<3"]
+
+[project.scripts]
+redline = "redline.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.8,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = ""

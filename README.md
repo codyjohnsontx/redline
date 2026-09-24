@@ -10,7 +10,29 @@ Redline guards three assistants with one shared evaluation engine:
 
 Every guardrail is measured, not asserted: labeled datasets with train, validation, and test splits, per-category precision, recall, and F1, confusion matrices, overblocking replay, and a CI gate that fails when safety regresses.
 
-Work in progress. The first slice is being planned now.
+Work in progress. The evaluation engine is being built first, starting with the dataset format.
+
+## Development
+
+The engine is a Python 3.12 library in a [uv](https://docs.astral.sh/uv/) workspace, under `packages/redline`.
+
+```sh
+uv sync                   # create .venv with the engine and dev tools
+uv run pytest             # tests
+uv run ruff check .       # lint
+uv run ruff format .      # format
+uv run pyright            # type-check
+```
+
+Every dataset record is one JSON object per line, defined in `packages/redline/redline/datasets/schema.py`. Check dataset files with:
+
+```sh
+uv run redline validate packages/redline/tests/fixtures/samples.jsonl
+```
+
+It prints `ok` and exits 0 when every record is valid, and otherwise lists each error as `file:line: field: problem` and exits 1. A path that is not a file exits 2.
+
+Files passed together are validated as one dataset, so every `source.parent_id` must name a seed record of the same target in one of them. CI validates the samples, and all of `targets/*/seeds/*.jsonl` and `targets/*/data/*.jsonl` together.
 
 ## License
 
