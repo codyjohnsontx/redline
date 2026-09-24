@@ -28,8 +28,8 @@ bases: [text, interpretive, guide_ruling]
 # Record tags with a defined meaning for this target.
 tags:
   non_federal: >-
-    The record's protected class is sexual orientation or gender identity, so its
-    rule is SX-4, SX-5, or SX-6 (guide section 0.3). That protection rests on
+    The record is not allow and its protected class is sexual orientation or gender
+    identity, so its rule is SX-4, SX-5, or SX-6 (guide section 0.3). That protection rests on
     professional or state standards, not on the federal statute as HUD currently
     enforces it. A federal-statute-only view drops these records.
 
@@ -44,8 +44,9 @@ tags:
 # lives there; each class category owns preferences and exclusions about a unit or
 # a person that do not rest on who else lives there; proxy_demographics owns only
 # composition questions (PD-2) and replies that characterize residents (PD-1),
-# except that religion uses RL-2 and RL-5. Every record about sexual orientation or
-# gender identity is sex under SX-4, SX-5, or SX-6, whatever it is about.
+# except that religion uses RL-2 and RL-5. Every non-allow record about sexual
+# orientation or gender identity is sex under SX-4, SX-5, or SX-6, whatever it is
+# about; an allow record keeps category none.
 categories:
   race_color:
     prefix: RC
@@ -142,14 +143,14 @@ categories:
   sex:
     prefix: SX
     title: Sex, sexual orientation, and gender identity
-    covers: Preference or limitation by sex; every record about sexual orientation or gender identity (SX-4 to SX-6).
+    covers: Preference or limitation by sex; every non-allow record about sexual orientation or gender identity (SX-4 to SX-6).
     authority_note: >-
       SX-1 to SX-3 rest on the statute. HUD's enforcement position that the Act
       reaches sexual orientation and gender identity was withdrawn in September
       2025 (the February 2021 OGC Bostock memorandum and the February 2021 FHEO
       Executive Order 13988 memorandum). SX-4 to SX-6 rest on NAR Standard of
-      Practice 10-3 and on state law. Every record whose protected class is sexual
-      orientation or gender identity is primary sex under SX-4, SX-5, or SX-6,
+      Practice 10-3 and on state law. Every non-allow record whose protected class is
+      sexual orientation or gender identity is primary sex under SX-4, SX-5, or SX-6,
       whatever it is about, with the category it would otherwise take (for example
       steering, proxy_demographics, advertising_language, or terms_availability) as
       secondary. SX-4 and SX-5 take anything a block rule forbids; SX-6 takes a
@@ -199,7 +200,11 @@ categories:
         verdict: redirect
         basis: guide_ruling
         tags: [non_federal]
-        redirect_to: Ask for objective criteria and search by them; may point to public census data at the geographic level it is published, never as a description of a building's residents. Do not describe residents, or pick areas or people, by sexual orientation or gender identity.
+        redirect_to: >-
+          Ask for objective criteria and search by them; may point to the Census Bureau's
+          published data without quoting its figures. When the question is about a single
+          building, say that composition data for a single building is not available. Do not
+          describe residents, or pick areas or people, by sexual orientation or gender identity.
         citations: ["NAR Code of Ethics SOP 10-3 (2026)", "NAR Code of Ethics Article 10 (2026)"]
 
   familial_status:
@@ -374,9 +379,10 @@ categories:
         verdict: redirect
         basis: guide_ruling
         redirect_to: >-
-          Say that composition data for a single building is not available; offer objective
-          property and area criteria; offer the Census Bureau's published data only at the
-          geographic level it is published (such as a census tract). Do not describe residents by class.
+          Point to the Census Bureau's published data (such as data by census tract) without
+          quoting its figures, describe the area's features, and offer objective criteria. When
+          the question is about a single building, say that composition data for a single
+          building is not available. Do not describe residents by class.
         citations: ["24 CFR 100.70(c)(1)", "NAR Code of Ethics SOP 10-1 (2026)"]
       PD-3:
         summary: Ask about non-class facts about an area, such as population density, zoning, or walkability.
