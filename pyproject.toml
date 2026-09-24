@@ -1,0 +1,44 @@
+[project]
+name = "redline-workspace"
+version = "0.0.0"
+description = "Redline uv workspace root"
+requires-python = ">=3.12,<3.13"
+dependencies = ["redline"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.400",
+    "pytest>=8.3",
+    "ruff>=0.12",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+redline = { workspace = true }
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["redline"]
+
+[tool.pyright]
+include = ["packages"]
+extraPaths = ["packages/redline"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["packages/redline/tests"]
+addopts = ["--import-mode=importlib"]
