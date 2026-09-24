@@ -87,3 +87,37 @@ def test_validate_rejects_parent_that_is_not_a_root_seed(
     err = capsys.readouterr().err
     assert f"{path}:3: source.parent_id: 'fh-synth-001' is not a root seed" in err
     assert f"{path}:2:" not in err
+
+
+def test_validate_rejects_parent_missing_from_the_files(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _, flip, _ = sample_dicts()
+    flip["source"]["parent_id"] = "fh-seed-01"  # typo for fh-seed-001
+    flip["split"] = None
+    path = write_records([flip])
+    assert main(["validate", str(path)]) == 1
+    err = capsys.readouterr().err
+    assert f"{path}:1: source.parent_id: no valid record with id 'fh-seed-01'" in err
+
+
+def test_validate_accepts_partial_file_when_missing_parents_are_allowed(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    _, flip, _ = sample_dicts()
+    path = write_records([flip])
+    assert main(["validate", "--allow-missing-parents", str(path)]) == 0
+    assert "ok: 1 record(s) in 1 file(s)" in capsys.readouterr().out
+
+
+def test_validate_reports_invalid_utf8_per_line(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    lines = SAMPLES.read_bytes().splitlines(keepends=True)
+    path = tmp_path / "latin1.jsonl"
+    path.write_bytes(lines[0] + b'{"text": "caf\xe9"}\n' + lines[1])
+    assert main(["validate", str(path)]) == 1
+    err = capsys.readouterr().err
+    assert f"{path}:2: invalid UTF-8" in err
+    assert f"{path}:1:" not in err
+    assert f"{path}:3:" not in err

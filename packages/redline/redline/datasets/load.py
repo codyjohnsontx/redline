@@ -42,8 +42,13 @@ class DatasetError(Exception):
 def parse_jsonl(path: Path) -> ParsedFile:
     """Parse every line of `path`, collecting records and errors rather than stopping at one."""
     parsed = ParsedFile(path)
-    with path.open(encoding="utf-8") as handle:
-        for line_no, line in enumerate(handle, start=1):
+    with path.open("rb") as handle:
+        for line_no, raw in enumerate(handle, start=1):
+            try:
+                line = raw.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                parsed.errors.append(RecordError(path, line_no, f"invalid UTF-8: {exc.reason}"))
+                continue
             if not line.strip():
                 continue
             try:

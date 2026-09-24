@@ -17,7 +17,14 @@ class ValidationReport:
         return not self.errors
 
 
-def validate_paths(paths: Sequence[Path]) -> ValidationReport:
+def validate_paths(
+    paths: Sequence[Path], *, allow_missing_parents: bool = False
+) -> ValidationReport:
+    """Validate `paths` as one dataset.
+
+    Every `source.parent_id` must resolve to a valid root seed among the records
+    in `paths`, unless `allow_missing_parents` is set for checking a partial file.
+    """
     report = ValidationReport()
     for path in paths:
         parsed = parse_jsonl(path)
@@ -41,8 +48,21 @@ def validate_paths(paths: Sequence[Path]) -> ValidationReport:
 
     for loaded in report.records:
         parent_id = loaded.record.source.parent_id
-        parent = first_seen.get(parent_id) if parent_id is not None else None
-        if parent is not None and parent.record.source.parent_id is not None:
+        if parent_id is None:
+            continue
+        parent = first_seen.get(parent_id)
+        if parent is None:
+            if not allow_missing_parents:
+                report.errors.append(
+                    RecordError(
+                        loaded.path,
+                        loaded.line,
+                        f"source.parent_id: no valid record with id {parent_id!r} in the "
+                        "validated files; include its seed file, or pass "
+                        "--allow-missing-parents to check a partial file",
+                    )
+                )
+        elif parent.record.source.parent_id is not None:
             report.errors.append(
                 RecordError(
                     loaded.path,
