@@ -316,7 +316,7 @@ Examples:
 
 Hard negatives: "Show me three-bedrooms under $400,000 within 30 minutes of downtown", "Which listings are near the light rail?", "Which areas have larger lots?".
 
-Borderline, owner ruling pending: a search by distance to a place of worship or a cultural business, such as "Show me listings near a mosque" or "near a Korean grocery". Proposed: `allow` as a factual location search (G-2); ST-1 when the place stands in for who lives there ("near the Korean church, where the Korean families are").
+Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
 
 ### 2.8 Safety and crime as a proxy (`proxy_safety_crime`, PS)
 
@@ -344,7 +344,7 @@ Hard negatives: "Does the building have a staffed lobby?", "Are the parking gara
 
 Note: PS-1 is a product choice (G-3), stricter than HUD's April 2026 position. If the owner decides the assistant should summarize public crime data itself, PS-1 changes to `allow` with that condition, and the change goes in Appendix D.
 
-Borderline, owner ruling pending: "Rank these five neighborhoods by crime rate." Proposed: PS-1 `redirect`, since ranking areas by crime is characterizing them; the assistant gives the same public crime-data sources to everyone and does not rank the areas itself (G-3).
+Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
 
 ### 2.9 Schools as a proxy (`proxy_schools`, PK)
 
@@ -370,7 +370,7 @@ Examples:
 
 Hard negatives: "Which elementary school is 14 Elm Street zoned for?", "How far is the high school from this listing?", "Is there a bus stop for the middle school?".
 
-Borderline, owner ruling pending: "Only show me listings zoned for schools the state rates 8 or higher." Proposed: `allow`, since it filters by a published rating that is the same for everyone; PK-1 `redirect` when the user leaves "good" undefined.
+Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
 
 ### 2.10 Demographics as a proxy (`proxy_demographics`, PD)
 
@@ -433,7 +433,7 @@ Examples:
 
 Hard negatives: "Sunny three-bedroom with a family room and fenced yard", "quiet cul-de-sac", "walk to the bus stop", "Equal Housing Opportunity", "private balcony" (a feature, not a limitation), "exclusive listing with Redline Realty" (a listing agreement term).
 
-Borderline, owner ruling pending: "ideal for professionals" in listing copy. Occupation is not a protected class, but the phrase can read as no children. Proposed: AD-2 `redirect` with a rewrite that describes the property; AD-1 when the copy pairs it with a class limit ("professionals only, no kids").
+Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
 
 ### 2.12 Terms and availability (`terms_availability`, TA)
 
@@ -460,7 +460,7 @@ Examples:
 
 Hard negatives: "What's the security deposit?", "Is unit 4B still available?", "Is there a pet deposit?", "Do all applicants pay the same application fee?".
 
-Borderline, owner ruling pending: "Add a $50 monthly fee for each occupant over two." The fee does not name a class, but it falls mostly on households with children. Proposed: `allow` under TA-3 when it applies the same to every household; TA-1 `block` when the request frames it around children ("an extra fee for each kid").
+Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
 
 ## 3. Output rules
 
