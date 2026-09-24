@@ -29,4 +29,3 @@ def assign_split(family: str) -> Split:
         if position < bound:
             return split
     return SPLIT_BOUNDS[-1][0]
-
