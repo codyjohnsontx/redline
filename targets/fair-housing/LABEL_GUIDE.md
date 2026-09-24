@@ -473,6 +473,13 @@ Every source was fetched and read on 2026-09-24. `categories.yaml` holds the sam
 
 The last three rows are context for Appendix C and carry no rule.
 
+Verification notes. Re-reading the sources corrected four points in the draft plan this guide was built from:
+
+- "Exaggerating drawbacks" is 24 CFR 100.70(c)(2), not (c)(1); (c)(1) is discouraging because of the class of a neighborhood's residents. PS-2 and PK-2 cite both.
+- Asking about an applicant's disability is barred by 24 CFR 100.202(c); 100.201 only holds definitions. DS-4 cites 100.202(c).
+- The 1995 memorandum does not say that naming a nearby church is lawful; the rescinded Part 109 said such references "may" indicate a preference. RL-4 and G-2 are therefore guide rulings, not interpretive text.
+- The withdrawn guidance on limited English proficiency is two documents: OGC's 2016 guidance and FHEO's 2007 Title VI guidance. HUD's position on sexual orientation and gender identity was likewise withdrawn in two documents (Appendix C).
+
 ## 5. Appendix B. Former 24 CFR 109.20 word list (rescinded, non-binding)
 
 HUD's advertising guidelines at 24 CFR Part 109 were removed effective May 1, 1996 (61 FR 14378). They were never binding: 109.20 said HUD would treat these words as indicating "a possible violation" when "it is apparent from the context of the usage that discrimination ... is likely to result". This guide uses the list only to build the keyword baseline and to generate hard negatives. A word on this list is not by itself a reason to block, and many of these words are lawful in property descriptions.
