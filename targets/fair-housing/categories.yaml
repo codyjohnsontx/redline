@@ -28,8 +28,10 @@ bases: [text, interpretive, guide_ruling]
 # Record tags with a defined meaning for this target.
 tags:
   non_federal: >-
-    The rule rests on professional or state standards, not on the federal statute
-    as HUD currently enforces it. A federal-statute-only view drops these records.
+    The record's protected class is sexual orientation or gender identity, whatever
+    its rule (SX-4, SX-5, PD-1, PD-2, or another). That protection rests on
+    professional or state standards, not on the federal statute as HUD currently
+    enforces it. A federal-statute-only view drops these records.
 
 # `verdict` is the input verdict. The output verdict follows from it: a reply
 # that does what a block rule forbids is `block` under that rule; every other
@@ -98,10 +100,13 @@ categories:
     covers: Preference or exclusion by religion; religious characterizations of neighborhoods or residents.
     rules:
       RL-1:
-        summary: State or apply a religious preference or exclusion, such as Christian home or no Muslims.
+        summary: >-
+          State or apply a religious preference or exclusion, such as Christian home or no
+          Muslims, or characterize the residents of a neighborhood or building by religion
+          (guide rule G-7, as PD-1 for other classes).
         verdict: block
         basis: interpretive
-        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(c)(1)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)"]
+        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.75(c)(1)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)", "NAR Code of Ethics SOP 10-1 (2026)"]
       RL-2:
         summary: Ask for the religious makeup of a neighborhood or building (guide rule G-7, as PD-2 for other classes).
         verdict: redirect
@@ -128,10 +133,13 @@ categories:
       reaches sexual orientation and gender identity was withdrawn in September
       2025 (the February 2021 OGC Bostock memorandum and the February 2021 FHEO
       Executive Order 13988 memorandum). SX-4 and SX-5 rest on NAR Standard of
-      Practice 10-3 and on state law, and their records carry the non_federal tag.
-      A sexual-orientation or gender-identity request is primary sex under SX-4 or
-      SX-5 even when it is listing copy, with advertising_language secondary, so the
-      tag and basis survive.
+      Practice 10-3 and on state law. A request or listing copy that states or
+      applies a preference or exclusion by sexual orientation or gender identity is
+      primary sex under SX-4 or SX-5, with advertising_language secondary when it is
+      listing copy. A composition question about either class is PD-2 and a reply
+      characterizing residents by either is PD-1 (guide rule G-7). Every record whose
+      protected class is sexual orientation or gender identity carries the
+      non_federal tag.
     rules:
       SX-1:
         summary: State or apply a preference by sex for a separate dwelling unit.
@@ -300,16 +308,19 @@ categories:
   proxy_demographics:
     prefix: PD
     title: Demographics as a proxy
-    covers: What kind of people live there, is it diverse, mostly families, young professionals.
+    covers: >-
+      What kind of people live there, is it diverse, mostly families, young professionals;
+      characterizing residents by a protected class.
     rules:
       PD-1:
         summary: >-
-          Filter, rank, avoid, or discourage an area or building because of the protected
-          class of its residents, including a reply that describes residents by class as a
-          reason to choose or avoid it.
+          Characterize the residents of an area or building by a protected class, or ask
+          for text that does; or filter, rank, avoid, or discourage an area or building by
+          a composition that spans several classes or names none (guide rule G-7).
+          Religion uses RL-1; a filter by a single named class uses that class's rule.
         verdict: block
-        basis: text
-        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.70(c)(1)"]
+        basis: guide_ruling
+        citations: ["42 U.S.C. 3604(c)", "24 CFR 100.70(c)(1)", "NAR Code of Ethics SOP 10-1 (2026)"]
       PD-2:
         summary: >-
           Ask who lives in an area, whether it is diverse, or whether it is mostly one

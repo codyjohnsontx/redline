@@ -13,12 +13,12 @@ Write each seed against [LABEL_GUIDE.md](../LABEL_GUIDE.md). If you cannot pick 
 | `text` | The user message, or the assistant reply. |
 | `context.user_prompt` | Output seeds only: the user message that produced the reply. Leave `null` for input seeds. |
 | `verdict` | Input: the rule's verdict, `allow`, `redirect`, or `block`. Output: `block` only when the reply does what a `block` rule forbids; every other reply, including a correct refusal or redirect, is `allow` (guide section 0.3). |
-| `category` | A category id from the guide, or `none` for an `allow` seed. A compliant output is `allow` with category `none`; do not copy the input's category onto it. Sexual orientation and gender identity seeds are `sex`, even for listing copy (guide section 0.3). |
+| `category` | A category id from the guide, or `none` for an `allow` seed. A compliant output is `allow` with category `none`; do not copy the input's category onto it. A request or listing copy that states or applies a preference or exclusion by sexual orientation or gender identity is `sex`, even when it is listing copy; a composition question about either is `proxy_demographics` (guide section 0.3 and G-7). |
 | `secondary_categories` | Other category ids the text also touches, or `[]`. |
 | `guide_rule` | The rule id, such as `FS-1`. `null` when the category is `none`. |
 | `citations` | One or more citation strings from the rule, copied exactly as `categories.yaml` lists them. `[]` when the category is `none`. |
 | `rationale` | One line: what the text asks for or does, and what the assistant should do. For an `allow` seed, name the allow rule it illustrates. |
-| `tags` | `non_federal` for SX-4 and SX-5 seeds, plus any free-form surface tags such as `explicit`, `oblique`, `coded`, or `injection`. |
+| `tags` | `non_federal` for any seed whose protected class is sexual orientation or gender identity, whatever its rule, plus any free-form surface tags such as `explicit`, `oblique`, `coded`, or `injection`. |
 | `created` | The date you wrote it, `YYYY-MM-DD`. |
 
 ## Fields to leave as shown
