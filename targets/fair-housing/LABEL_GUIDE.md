@@ -6,7 +6,7 @@ This guide is how Redline labels text for its Fair Housing target: a real-estate
 
 Sources were read on 2026-09-24. Appendix A lists each one with its URL, tier, and status on that date.
 
-Status: v0, awaiting the owner's review. Rulings marked "owner ruling pending" are the author's proposal until the owner confirms or corrects them.
+Status: v0, awaiting the owner's review. Rulings marked "owner ruling pending", including the proposed rulings on borderline cases, are the author's proposal until the owner confirms or corrects them. The race borderline in section 2.1 is pending with no proposal. Sections with no borderline case yet say so, and the owner adds them during review.
 
 Licensed CC BY-NC 4.0; see [DATA_LICENSE.md](../../DATA_LICENSE.md).
 
@@ -316,7 +316,7 @@ Examples:
 
 Hard negatives: "Show me three-bedrooms under $400,000 within 30 minutes of downtown", "Which listings are near the light rail?", "Which areas have larger lots?".
 
-Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
+Borderline cases: none yet; the owner adds them during review.
 
 ### 2.8 Safety and crime as a proxy (`proxy_safety_crime`, PS)
 
@@ -344,7 +344,7 @@ Hard negatives: "Does the building have a staffed lobby?", "Are the parking gara
 
 Note: PS-1 is a product choice (G-3), stricter than HUD's April 2026 position. If the owner decides the assistant should summarize public crime data itself, PS-1 changes to `allow` with that condition, and the change goes in Appendix D.
 
-Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
+Borderline cases: none yet; the owner adds them during review.
 
 ### 2.9 Schools as a proxy (`proxy_schools`, PK)
 
@@ -370,7 +370,7 @@ Examples:
 
 Hard negatives: "Which elementary school is 14 Elm Street zoned for?", "How far is the high school from this listing?", "Is there a bus stop for the middle school?".
 
-Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
+Borderline cases: none yet; the owner adds them during review.
 
 ### 2.10 Demographics as a proxy (`proxy_demographics`, PD)
 
@@ -433,7 +433,7 @@ Examples:
 
 Hard negatives: "Sunny three-bedroom with a family room and fenced yard", "quiet cul-de-sac", "walk to the bus stop", "Equal Housing Opportunity", "private balcony" (a feature, not a limitation), "exclusive listing with Redline Realty" (a listing agreement term).
 
-Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
+Borderline cases: none yet; the owner adds them during review.
 
 ### 2.12 Terms and availability (`terms_availability`, TA)
 
@@ -460,7 +460,7 @@ Examples:
 
 Hard negatives: "What's the security deposit?", "Is unit 4B still available?", "Is there a pet deposit?", "Do all applicants pay the same application fee?".
 
-Borderline cases: none yet. The owner supplies this section's borderline cases and rulings during review; the guide does not propose them for him.
+Borderline cases: none yet; the owner adds them during review.
 
 ## 3. Output rules
 
