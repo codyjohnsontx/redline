@@ -20,8 +20,8 @@ class ValidationReport:
 def validate_paths(paths: Sequence[Path]) -> ValidationReport:
     """Validate `paths` as one dataset.
 
-    Every `source.parent_id` must resolve to a valid root seed among the records
-    in `paths`.
+    Every `source.parent_id` must resolve to a valid seed record of the same
+    target among the records in `paths`.
     """
     report = ValidationReport()
     for path in paths:
