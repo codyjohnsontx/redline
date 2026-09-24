@@ -12,6 +12,10 @@ Every guardrail is measured, not asserted: labeled datasets with train, validati
 
 Work in progress. The evaluation engine is being built first, starting with the dataset format.
 
+## Fair Housing target
+
+The first target lives in [`targets/fair-housing/`](targets/fair-housing/). Its [label guide](targets/fair-housing/LABEL_GUIDE.md) defines twelve categories and the rules every record is labeled by, each rule tied to the statute, regulation, or guidance it rests on; [`categories.yaml`](targets/fair-housing/categories.yaml) holds the same rules and citations as data. The guide is a demonstration against published guidance, not legal advice and not a legal-compliance claim. What each verdict means is recorded in [docs/adr/0001-verdict-semantics.md](docs/adr/0001-verdict-semantics.md).
+
 ## Development
 
 The engine is a Python 3.12 library in a [uv](https://docs.astral.sh/uv/) workspace, under `packages/redline`.
@@ -36,4 +40,4 @@ Files passed together are validated as one dataset, so every `source.parent_id` 
 
 ## License
 
-Code is MIT licensed. See [LICENSE](LICENSE).
+Code is MIT licensed. See [LICENSE](LICENSE). Datasets under `targets/*/data/` and the label guides are licensed CC BY-NC 4.0; see [DATA_LICENSE.md](DATA_LICENSE.md). The test split is not published; see [NOTICE](NOTICE).

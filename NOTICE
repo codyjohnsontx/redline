@@ -1,0 +1,18 @@
+Redline
+Copyright (c) 2026 Cody Johnson
+
+Code is licensed under the MIT license (LICENSE).
+
+The datasets under targets/*/data/ and the label guides at
+targets/*/LABEL_GUIDE.md are licensed under Creative Commons
+Attribution-NonCommercial 4.0 International (DATA_LICENSE.md).
+
+The test split is unpublished. Each target's train and validation splits
+are published in this repository; its test split is held privately and is
+used only to report the numbers on the Redline dashboard. It is identified
+in every published result by its SHA-256 hash, so a result can be tied to
+the exact test set without the test set being released. Please do not
+request it: publishing it would let a judge be tuned to it.
+
+The label guides are a demonstration against published guidance, not legal
+advice and not a claim of legal compliance.
