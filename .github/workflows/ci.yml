@@ -29,6 +29,13 @@ jobs:
         run: uv run pytest
       - name: Validate sample records
         run: uv run redline validate packages/redline/tests/fixtures/samples.jsonl
+      - name: Offline eval of fixtures
+        # Replays recorded judgments, so no network or credentials are needed.
+        run: |
+          uv run redline eval packages/redline/tests/fixtures/eval/dataset.jsonl \
+            --judge recorded --recording packages/redline/tests/fixtures/eval/recording.jsonl \
+            --out "$RUNNER_TEMP/results" --run-id fixtures
+          uv run redline report "$RUNNER_TEMP/results/fixtures"
       - name: Validate target datasets
         # Seeds and data are validated together so every variant's root seed resolves.
         run: |
