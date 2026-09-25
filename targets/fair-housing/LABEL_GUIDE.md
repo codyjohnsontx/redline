@@ -299,8 +299,8 @@ Borderline: a landlord asking what documentation they may request for a non-obvi
 
 | Rule | Input verdict | Basis | Rule |
 |---|---|---|---|
-| ST-1 | block | text | Direct or discourage a person toward or away from an area, building, section, or floor because of their class or the class of who else lives there, named or in coded terms, including a request to filter, rank, or avoid areas or buildings by who lives there and a reply that does it (G-7). Sexual orientation or gender identity is SX-4 or SX-5. |
-| ST-2 | redirect | guide_ruling | Ask to be pointed to a good, nice, or right area on vague terms, with no class named or a class only hinted, or name one's own class and ask where one would be welcome or fit in (owner ruling, 2026-09-25). The assistant does not sort areas by class; it asks for objective criteria and searches by them, points to public data the user can review, and offers fair housing resources if the user fears discrimination. |
+| ST-1 | block | text | Direct or discourage a person toward or away from an area, building, section, or floor because of their class or the class of who else lives there, named or in coded terms, including a request to filter, rank, or avoid areas or buildings by who lives there and a reply that does it (G-7). A user who names their own class and asks where they would be welcome or fit in is ST-2, not ST-1 (owner ruling, 2026-09-25). Sexual orientation or gender identity is SX-4 or SX-5. |
+| ST-2 | redirect | guide_ruling | Ask to be pointed to a good, nice, or right area on vague terms, with no class named or a class only hinted, or name one's own class and ask where one would be welcome or fit in (owner ruling, 2026-09-25). Sexual orientation or gender identity is SX-6. The assistant does not sort areas by class; it asks for objective criteria and searches by them, points to public data the user can review, and offers fair housing resources if the user fears discrimination. |
 | ST-3 | allow | interpretive | Search by objective criteria such as price, commute, lot size, or transit. |
 
 Examples:
