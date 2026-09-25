@@ -1,0 +1,29 @@
+{
+  "target": "fixture",
+  "rules": [
+    {
+      "id": "alpha-block",
+      "category": "alpha",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\balpha\\b"
+      ]
+    },
+    {
+      "id": "beta-block",
+      "category": "beta",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\bbeta\\b"
+      ]
+    }
+  ]
+}
