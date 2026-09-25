@@ -438,7 +438,11 @@ categories:
     covers: Different terms, conditions, deposits, or services, or misrepresenting availability, because of a protected class.
     rules:
       TA-1:
-        summary: Set or suggest different rent, deposits, fees, lease terms, or services because of a protected class.
+        summary: >-
+          Set or suggest different rent, deposits, fees, lease terms, or services because of a
+          protected class, ask how to do it, or produce lease terms, fee schedules, or messages
+          that do it. A landlord asking whether such a difference is permitted is allow,
+          answered correctly.
         verdict: block
         basis: text
         citations: ["42 U.S.C. 3604(b)", "24 CFR 100.65(a)", "24 CFR 100.65(b)(1)", "24 CFR 100.203"]
