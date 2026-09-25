@@ -3,7 +3,8 @@
 results/<run_id>/
   metrics.json   the summary (redline.metrics.report.Metrics)
   items.jsonl    one ItemResult per evaluated record
-  run.json       git sha, judge id, dataset hashes, start and finish times, cost
+  run.json       git sha, judge id, dataset hashes overall and per split, start and finish
+                 times, cost
 """
 
 import asyncio
@@ -96,6 +97,7 @@ def run_eval(
         "judge_id": judge.id,
         "files": [{"path": str(p), "sha256": _file_sha(p)} for p in paths],
         "dataset_sha256": dataset_sha,
+        "dataset_sha256_by_split": _dataset_sha_by_split(gold),
         "started": started.isoformat(),
         "finished": datetime.now(UTC).isoformat(),
         "cost_usd": metrics.cost.usd if metrics.cost is not None else None,
@@ -133,6 +135,13 @@ def _dataset_sha(records: Sequence[Record]) -> str:
     # Sorted canonical records, so the hash ignores file order and other splits.
     lines = sorted(r.model_dump_json() for r in records)
     return hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
+
+
+def _dataset_sha_by_split(records: Sequence[Record]) -> dict[str, str]:
+    by_split: dict[str, list[Record]] = {}
+    for record in records:
+        by_split.setdefault(record.split or "unassigned", []).append(record)
+    return {split: _dataset_sha(group) for split, group in sorted(by_split.items())}
 
 
 def _file_sha(path: Path) -> str:

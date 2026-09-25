@@ -42,9 +42,9 @@ uv run redline eval packages/redline/tests/fixtures/eval/dataset.jsonl \
 uv run redline report results/<run_id>
 ```
 
-`redline eval` judges every gold record (records not yet gold are excluded and counted) and writes `results/<run_id>/` with `metrics.json` (verdict confusion matrices, per-category precision, recall, and F1 with Wilson 95% intervals, macro and weighted averages, block, redirect, and overblock rates, judge errors, cost, and latency), `items.jsonl` (one line per record), and `run.json` (git sha, judge id, dataset hashes, times). `--split` limits the run to one split. `redline report` prints a run as Markdown.
+`redline eval` judges every gold record (records not yet gold are excluded and counted) and writes `results/<run_id>/` with `metrics.json` (verdict confusion matrices, per-category precision, recall, and F1 with Wilson 95% intervals, the macro average as the headline number with the support-weighted average shown for comparison, block, redirect, and overblock rates, judge errors, cost, and latency), `items.jsonl` (one line per record), and `run.json` (git sha, judge id, dataset hashes overall and per split, times). `--split` limits the run to one split. `redline report` prints a run as Markdown.
 
-Two offline judges ship with the engine. `--judge keyword --rules FILE` is a regex baseline whose rules are a target's JSON file (see `packages/redline/redline/judges/keyword.py` for the format). `--judge recorded --recording FILE` replays judgments from a JSONL recording of `{"input": ..., "judgment": ...}` lines, matched by input content. A judge error always counts as a miss.
+Two offline judges ship with the engine. `--judge keyword --rules FILE` is a regex baseline whose rules are a target's JSON file (see `packages/redline/redline/judges/keyword.py` for the format). `--judge recorded --recording FILE` replays judgments from a JSONL recording of `{"input": ..., "judgment": ...}` lines, matched by input content. A judge error counts as a miss for per-category recall and block recall. The block, redirect, and overblock rates count only what the judge actually said, so errors are left out of them; the overblock rate reports its basis's judge error rate beside it.
 
 ## License
 

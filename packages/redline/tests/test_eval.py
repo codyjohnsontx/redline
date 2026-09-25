@@ -30,8 +30,10 @@ from pathlib import Path
 import pytest
 
 from redline.cli import main
+from redline.datasets.splits import assign_split
 from redline.evaluate import load_metrics, run_eval
 from redline.judges.base import BaseJudge, JudgeInput, Judgment
+from redline.judges.recorded import RecordedJudge
 
 from .conftest import SAMPLES
 
@@ -121,6 +123,8 @@ def test_recorded_eval_matches_hand_computed_metrics(
     assert (overblock.value, overblock.n) == (pytest.approx(1 / 3), 3)
     assert overblock.ci95 == pytest.approx((0.0615, 0.7923), abs=1e-4)
     assert overblock.basis == "hard_negative+playground"
+    # The one judge error, fx-in-09, is gold block, so none falls in the overblock basis.
+    assert (overblock.error_rate.value, overblock.error_rate.n) == (0.0, 3)
 
     assert metrics.cost is not None
     assert (metrics.cost.usd, metrics.cost.tokens_in, metrics.cost.tokens_out) == (0.001, 300, 30)
@@ -138,6 +142,8 @@ def test_eval_writes_items_and_run_files(tmp_path: Path) -> None:
     run = json.loads((run_dir / "run.json").read_text())
     assert run["judge_id"].startswith("recorded:recording@")
     assert run["dataset_sha256"] == load_metrics(run_dir).dataset.sha256
+    # The fixture records carry no split, so they hash as one unassigned group.
+    assert run["dataset_sha256_by_split"] == {"unassigned": run["dataset_sha256"]}
     assert run["files"][0]["path"] == str(DATASET)
 
 
@@ -166,7 +172,29 @@ def test_report_renders_the_run(tmp_path: Path, capsys: pytest.CaptureFixture[st
     )
     assert "| block | 0 | 1 | 3 | 1 |" in out
     assert "- overblock rate (hard_negative+playground): 0.333 [0.061, 0.792] (n 3)" in out
+    assert (
+        "- judge errors in the overblock basis, excluded from the overblock rate: "
+        "0.000 [0.000, 0.561] (n 3); under the runtime's fail-closed output policy "
+        "an output-direction error would reach the visitor as a refusal" in out
+    )
     assert "- latency: p50 110 ms, p95 300 ms" in out
+
+
+def test_run_file_hashes_each_split(tmp_path: Path) -> None:
+    records = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines()]
+    # Every record but the last gets its family's split; the last stays unassigned.
+    for record in records[:-1]:
+        record["split"] = assign_split(record["id"])
+    dataset = tmp_path / "dataset.jsonl"
+    dataset.write_text("".join(json.dumps(r) + "\n" for r in records), encoding="utf-8")
+    judge = RecordedJudge.from_file(RECORDING)
+    run = run_eval([dataset], judge, out_dir=tmp_path, run_id="all")
+    by_split = json.loads((run.run_dir / "run.json").read_text())["dataset_sha256_by_split"]
+    assert list(by_split) == ["test", "train", "unassigned", "val"]
+    # Each split's hash is the dataset hash of a run over that split alone.
+    for split in ("train", "val", "test"):
+        alone = run_eval([dataset], judge, out_dir=tmp_path, split=split, run_id=split)
+        assert by_split[split] == alone.metrics.dataset.sha256
 
 
 def test_eval_filters_by_split(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -244,3 +272,33 @@ def test_eval_counts_a_verdict_invalid_for_its_direction_as_a_judge_error(
     assert {i["error"] for i in outputs} == {
         "verdict 'redirect' is not valid for direction 'output'"
     }
+
+
+class _HardNegativeErrorJudge(BaseJudge):
+    """Replays the recording but errors on the hard negatives it recorded as allow."""
+
+    def __init__(self) -> None:
+        self._recorded = RecordedJudge.from_file(RECORDING)
+        records = [json.loads(line) for line in DATASET.read_text(encoding="utf-8").splitlines()]
+        self._failing = {r["text"] for r in records if r["id"] in {"fx-in-06", "fx-out-03"}}
+
+    @property
+    def id(self) -> str:
+        return "hard-negative-errors"
+
+    async def judge(self, item: JudgeInput) -> Judgment:
+        if item.text in self._failing:
+            return Judgment.failed(self.id, "timeout")
+        return await self._recorded.judge(item)
+
+
+def test_overblock_rate_leaves_out_judge_errors_and_reports_them_beside_it(
+    tmp_path: Path,
+) -> None:
+    run = run_eval([DATASET], _HardNegativeErrorJudge(), out_dir=tmp_path, run_id="run")
+    overblock = run.metrics.rates.overblock_rate
+    # Of the 3 hard negatives, 2 errored and the one judged (fx-in-07) was blocked.
+    assert (overblock.value, overblock.n) == (1.0, 1)
+    assert (overblock.error_rate.value, overblock.error_rate.n) == (pytest.approx(2 / 3), 3)
+    # Every error, including the recorded fx-in-09 timeout, is still in judge_errors.
+    assert run.metrics.rates.judge_errors == 3
