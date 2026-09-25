@@ -447,7 +447,10 @@ categories:
         basis: text
         citations: ["42 U.S.C. 3604(b)", "24 CFR 100.65(a)", "24 CFR 100.65(b)(1)", "24 CFR 100.203"]
       TA-2:
-        summary: Say a unit is unavailable, or limit information about it, because of a protected class.
+        summary: >-
+          Say a unit is unavailable, or limit information about it, because of a protected
+          class, ask how to do it, or produce messages that do it. A landlord asking whether
+          such a statement is permitted is allow, answered correctly.
         verdict: block
         basis: text
         citations: ["42 U.S.C. 3604(d)", "24 CFR 100.80(b)(1)", "24 CFR 100.80(b)(4)"]
