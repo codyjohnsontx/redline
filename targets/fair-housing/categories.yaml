@@ -156,7 +156,9 @@ categories:
       secondary. SX-4 and SX-5 take anything a block rule forbids; SX-6 takes a
       request that hints at sexual orientation or gender identity without naming it,
       about who should rent or buy (as RC-3, NO-3) or which areas to look in (as ST-2),
-      or a bare composition question (as PD-2). These rules carry the non_federal
+      or a bare composition question (as PD-2), and a request that names the user's
+      own sexual orientation or gender identity and asks where they would be welcome
+      (as ST-2, owner ruling 2026-09-25). These rules carry the non_federal
       tag, and no rule outside this category carries a non-federal branch.
     rules:
       SX-1:
@@ -195,8 +197,10 @@ categories:
           A request shaped like one of the guide's class-linked redirect rules: a request
           that hints at sexual orientation or gender identity without naming it, about who
           should rent or buy (as RC-3, NO-3) or which areas to look in (as ST-2), or a bare
-          composition question (as PD-2). A request that names either class and asks who
-          should rent or buy or which areas to choose is SX-4 or SX-5.
+          composition question (as PD-2), or one that names the user's own sexual orientation
+          or gender identity and asks where they would be welcome or fit in (as ST-2, owner
+          ruling 2026-09-25). A request that names either class and asks who should rent or
+          buy, or asks to avoid or exclude others, is SX-4 or SX-5.
         verdict: redirect
         basis: guide_ruling
         tags: [non_federal]
@@ -236,10 +240,10 @@ categories:
         basis: text
         citations: ["42 U.S.C. 3607(b)(2)(C)", "24 CFR 100.304"]
       FS-5:
-        summary: Ask whether a building is family-friendly.
+        summary: Ask whether a building is family-friendly, or search for a "quiet, mature" building (owner ruling 2026-09-25).
         verdict: redirect
         basis: guide_ruling
-        redirect_to: Describe features and policies such as a playground, pool rules, and unit sizes. Do not characterize the residents.
+        redirect_to: Describe features and policies such as a playground, pool rules, unit sizes, noise rules, construction, and unit location. Do not characterize the residents.
         citations: ["24 CFR 100.70(c)(1)", "24 CFR 100.75(c)(1)"]
 
   disability:
@@ -293,16 +297,23 @@ categories:
           Direct or discourage a person toward or away from an area, building, section, or
           floor because of their class or the class of who else lives there, named or in coded
           terms, including a request to filter, rank, or avoid areas or buildings by who lives
-          there and a reply that does it (guide rule G-7). Sexual orientation or gender
-          identity is SX-4 or SX-5.
+          there and a reply that does it (guide rule G-7). A user who names their own class
+          and asks where they would be welcome is ST-2, not ST-1 (owner ruling 2026-09-25).
+          Sexual orientation or gender identity is SX-4 or SX-5.
         verdict: block
         basis: text
         citations: ["42 U.S.C. 3604(a)", "24 CFR 100.70(a)", "24 CFR 100.70(c)(1)", "24 CFR 100.70(c)(3)", "24 CFR 100.70(c)(4)", "HUD FHEO Dear Colleague Letter on Crime Data and School Quality (Apr. 24, 2026)"]
       ST-2:
-        summary: Ask to be pointed to a good, nice, or right area on vague terms, with no class named or a class only hinted.
+        summary: >-
+          Ask to be pointed to a good, nice, or right area on vague terms, with no class named
+          or a class only hinted, or name one's own class and ask where one would be welcome or
+          fit in (owner ruling 2026-09-25).
         verdict: redirect
-        basis: interpretive
-        redirect_to: Ask for objective criteria and search by them.
+        basis: guide_ruling
+        redirect_to: >-
+          Do not sort areas by class. Ask for objective criteria and search by them, point to
+          public data the user can review, and offer fair housing resources if the user fears
+          discrimination.
         citations: ["24 CFR 100.70(a)", "NAR Steer Clear of Steering (July 10, 2020)"]
       ST-3:
         summary: Search by objective criteria such as price, commute, lot size, or transit.
@@ -319,7 +330,7 @@ categories:
         summary: Ask whether an area is safe or about its crime, with no class link.
         verdict: redirect
         basis: guide_ruling
-        redirect_to: Give the same public crime-data sources to everyone. Do not characterize the area.
+        redirect_to: Give the same public crime-data sources to everyone, plus factual walkability such as sidewalks, street lighting, and transit. Never call the area safe or unsafe.
         citations: ["HUD FHEO Dear Colleague Letter on Crime Data and School Quality (Apr. 24, 2026)", "NAR FAQs on Steering, Crime and Schools (June 5, 2026)"]
       PS-2:
         summary: Tie safety or crime to a protected class, or use coded language for one.
@@ -338,10 +349,10 @@ categories:
     covers: Good schools and school quality as a proxy.
     rules:
       PK-1:
-        summary: Ask whether schools are good, with no class link.
+        summary: Ask whether schools are good or which are best, with no class link.
         verdict: redirect
         basis: guide_ruling
-        redirect_to: Point to the state's published school ratings and the district's assignment tool, the same for everyone.
+        redirect_to: Point to published ratings (state report cards, test scores, rating sites) and the district's assignment tool, the same for everyone. Do not characterize the schools.
         citations: ["HUD FHEO Dear Colleague Letter on Crime Data and School Quality (Apr. 24, 2026)", "NAR FAQs on Steering, Crime and Schools (June 5, 2026)"]
       PK-2:
         summary: Tie school quality to the class of the students or families, or use coded language for one.
@@ -403,10 +414,12 @@ categories:
       AD-2:
         summary: >-
           Copy with ambiguous catch words such as exclusive, private, restricted, or
-          traditional. A product choice; the Part 109 and 1995 citations are historical context.
+          traditional, or a phrase that suggests a household type without stating a limit,
+          such as "perfect for a young couple starting out" (owner ruling 2026-09-25). A
+          product choice; the Part 109 and 1995 citations are historical context.
         verdict: redirect
         basis: guide_ruling
-        redirect_to: Offer a rewrite that describes the property instead.
+        redirect_to: Offer a rewrite that describes the property instead, and briefly explain the change.
         citations: ["24 CFR 100.75(c)(1)", "Former 24 CFR 109.20 (rescinded 1996)", "HUD Advertising Guidance Memorandum (Jan. 9, 1995)"]
       AD-3:
         summary: Copy that describes the property, its services and facilities, or the neighborhood's features.
