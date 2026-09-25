@@ -345,6 +345,47 @@ def test_report_refuses_items_that_do_not_match_the_metrics(
     assert "metrics.json does not match the 14 item(s)" in capsys.readouterr().err
 
 
+@pytest.mark.parametrize(
+    ("item_id", "edit", "message"),
+    [
+        (
+            "fx-out-01",
+            {"gold_verdict": "redirect"},
+            "gold verdict 'redirect' is not valid for direction 'output'",
+        ),
+        (
+            "fx-out-01",
+            {"predicted_verdict": "redirect"},
+            "verdict 'redirect' is not valid for direction 'output'",
+        ),
+        (
+            "fx-in-09",
+            {"predicted_verdict": "block", "predicted_category": "beta"},
+            "an errored item must not carry a predicted verdict or category",
+        ),
+    ],
+)
+def test_report_refuses_an_item_that_cannot_be_scored(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    item_id: str,
+    edit: dict[str, str],
+    message: str,
+) -> None:
+    assert run_recorded(tmp_path) == 0
+    items = tmp_path / "run" / "items.jsonl"
+    rows = [json.loads(line) for line in items.read_text(encoding="utf-8").splitlines()]
+    for row in rows:
+        if row["id"] == item_id:
+            row.update(edit)
+    items.write_text("".join(json.dumps(row) + "\n" for row in rows), encoding="utf-8")
+    capsys.readouterr()
+    assert main(["report", str(tmp_path / "run")]) == 1
+    err = capsys.readouterr().err
+    assert "invalid run file" in err
+    assert message in err
+
+
 class _RedirectJudge(BaseJudge):
     @property
     def id(self) -> str:

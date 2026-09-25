@@ -1,8 +1,9 @@
 """The metrics report: per-item results in, `metrics.json` and a readable summary out."""
 
 from collections.abc import Sequence
+from typing import Self
 
-from pydantic import BaseModel, ConfigDict, NonNegativeInt
+from pydantic import BaseModel, ConfigDict, NonNegativeInt, model_validator
 
 from redline.datasets.schema import (
     NO_CATEGORY,
@@ -11,7 +12,7 @@ from redline.datasets.schema import (
     SourceKind,
     Verdict,
 )
-from redline.judges.base import Usage
+from redline.judges.base import Usage, decision_problem
 from redline.metrics.confusion import ConfusionMatrix
 from redline.metrics.intervals import wilson
 from redline.metrics.prf import Averages, category_counts, macro_average, weighted_average
@@ -42,6 +43,23 @@ class ItemResult(_Model):
     judge_id: str
     latency_ms: NonNegativeInt | None
     usage: Usage | None
+
+    @model_validator(mode="after")
+    def _scoreable(self) -> Self:
+        if self.gold_verdict not in VERDICTS_BY_DIRECTION[self.direction]:
+            raise ValueError(
+                f"gold verdict {self.gold_verdict!r} is not valid for direction {self.direction!r}"
+            )
+        verdict, category = self.predicted_verdict, self.predicted_category
+        if self.error is None:
+            if verdict is None or category is None:
+                raise ValueError("an item without error requires a predicted verdict and category")
+            problem = decision_problem(verdict, category, self.direction)
+            if problem is not None:
+                raise ValueError(problem)
+        elif verdict is not None or category is not None:
+            raise ValueError("an errored item must not carry a predicted verdict or category")
+        return self
 
 
 class DatasetInfo(_Model):
