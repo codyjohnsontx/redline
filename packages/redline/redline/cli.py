@@ -9,7 +9,7 @@ from pydantic import ValidationError
 
 from redline.datasets.load import DatasetError
 from redline.datasets.validate import validate_paths
-from redline.evaluate import EvalError, load_metrics, run_eval
+from redline.evaluate import EvalError, RunArtifactError, load_run, run_eval
 from redline.judges.base import Judge
 from redline.judges.keyword import KeywordJudge
 from redline.judges.recorded import RecordedJudge, RecordingError
@@ -109,14 +109,13 @@ def _eval(args: argparse.Namespace) -> int:
 
 
 def _report(run_dir: Path) -> int:
-    metrics_path = run_dir / "metrics.json"
-    if not metrics_path.is_file():
-        print(f"{metrics_path}: not a file", file=sys.stderr)
+    if not run_dir.is_dir():
+        print(f"{run_dir}: not a directory", file=sys.stderr)
         return 2
     try:
-        metrics = load_metrics(run_dir)
-    except ValidationError as exc:
-        print(f"{metrics_path}: not a valid metrics file: {exc}", file=sys.stderr)
+        metrics = load_run(run_dir)
+    except RunArtifactError as exc:
+        print(exc, file=sys.stderr)
         return 1
     print(render_markdown(metrics), end="")
     return 0

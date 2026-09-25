@@ -35,9 +35,13 @@ class CategoryCounts:
 
 @dataclass(frozen=True)
 class Averages:
-    precision: float
+    # None when no averaged category was ever predicted.
+    precision: float | None
     recall: float
     f1: float
+    # Categories left out of the precision average because they were never predicted,
+    # so their precision is undefined. Recall and F1 average over every category.
+    precision_excluded: int
 
 
 def category_counts(
@@ -83,16 +87,16 @@ def _average(counts: Mapping[str, CategoryCounts], *, weighted: bool) -> Average
     scored = [c for c in counts.values() if c.support]
     if not scored:
         return None
-    weights = [c.support if weighted else 1 for c in scored]
-    total = sum(weights)
 
-    def mean(values: list[float]) -> float:
-        return sum(w * v for w, v in zip(weights, values, strict=True)) / total
+    def mean(pairs: list[tuple[CategoryCounts, float]]) -> float:
+        weights = [c.support if weighted else 1 for c, _ in pairs]
+        return sum(w * v for w, (_, v) in zip(weights, pairs, strict=True)) / sum(weights)
 
-    # A category that was never predicted has undefined precision; it averages as 0
-    # so that never predicting a category cannot raise the average.
+    precise = [(c, p) for c in scored if (p := c.precision) is not None]
     return Averages(
-        precision=mean([c.precision or 0.0 for c in scored]),
-        recall=mean([c.recall or 0.0 for c in scored]),
-        f1=mean([c.f1 for c in scored]),
+        precision=mean(precise) if precise else None,
+        # Every scored category has support, so its recall is defined.
+        recall=mean([(c, c.recall or 0.0) for c in scored]),
+        f1=mean([(c, c.f1) for c in scored]),
+        precision_excluded=len(scored) - len(precise),
     )

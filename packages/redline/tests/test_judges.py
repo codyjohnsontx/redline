@@ -174,3 +174,19 @@ def test_judge_many_keeps_order_and_bounds_concurrency() -> None:
     judgments = asyncio.run(judge.judge_many(items, concurrency=3))
     assert [j.rationale for j in judgments] == [str(i) for i in range(10)]
     assert judge.peak == 3
+
+
+@pytest.mark.parametrize(
+    ("verdict", "category", "problem"),
+    [
+        ("allow", "alpha", "verdict 'allow' requires category 'none'"),
+        ("redirect", "none", "verdict 'redirect' requires a category other than 'none'"),
+        ("block", "none", "verdict 'block' requires a category other than 'none'"),
+    ],
+)
+def test_judgment_rejects_an_inconsistent_verdict_and_category(
+    verdict: str, category: str, problem: str
+) -> None:
+    payload = {"verdict": verdict, "category": category, "judge_id": "j"}
+    with pytest.raises(ValidationError, match=problem):
+        Judgment.model_validate_json(json.dumps(payload))

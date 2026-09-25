@@ -64,9 +64,10 @@ def test_macro_and_weighted_averages() -> None:
     assert weighted.f1 == pytest.approx((4 * 4 / 7 + 2 * 1 / 2) / 6)
 
 
-def test_averages_skip_categories_without_gold_and_zero_unpredicted_precision() -> None:
-    # gamma is only ever predicted, so it has no support and is left out of the average;
-    # delta is never predicted, so its undefined precision averages as 0.
+def test_averages_skip_categories_without_gold_and_undefined_precision() -> None:
+    # gamma is only ever predicted, so it has no support and is left out of every average;
+    # delta is never predicted, so its undefined precision is left out of the precision
+    # average (and counted) while its recall and F1 of 0 still average in.
     counts = category_counts(
         [("alpha", "alpha"), ("none", "gamma"), ("delta", "none")], exclude="none"
     )
@@ -76,9 +77,20 @@ def test_averages_skip_categories_without_gold_and_zero_unpredicted_precision() 
     assert counts["delta"].f1 == 0.0
     macro = macro_average(counts)
     assert macro is not None
-    assert macro.precision == pytest.approx(0.5)
+    assert macro.precision == pytest.approx(1.0)
+    assert macro.precision_excluded == 1
     assert macro.recall == pytest.approx(0.5)
     assert macro.f1 == pytest.approx(0.5)
+    weighted = weighted_average(counts)
+    assert weighted is not None
+    assert (weighted.precision, weighted.precision_excluded) == (pytest.approx(1.0), 1)
+
+
+def test_average_precision_is_none_when_no_category_was_predicted() -> None:
+    counts = category_counts([("delta", "none")], exclude="none")
+    macro = macro_average(counts)
+    assert macro is not None
+    assert (macro.precision, macro.precision_excluded, macro.f1) == (None, 1, 0.0)
 
 
 def test_averages_are_none_without_gold_positives() -> None:

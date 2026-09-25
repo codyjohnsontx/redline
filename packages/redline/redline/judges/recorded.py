@@ -10,8 +10,7 @@ from typing import Self
 
 from pydantic import BaseModel, ConfigDict, ValidationError, model_validator
 
-from redline.datasets.schema import VERDICTS_BY_DIRECTION
-from redline.judges.base import BaseJudge, JudgeInput, Judgment
+from redline.judges.base import BaseJudge, JudgeInput, Judgment, decision_problem
 
 
 class Recording(BaseModel):
@@ -21,10 +20,12 @@ class Recording(BaseModel):
     judgment: Judgment
 
     @model_validator(mode="after")
-    def _verdict_fits_direction(self) -> Self:
-        verdict, direction = self.judgment.verdict, self.input.direction
-        if verdict is not None and verdict not in VERDICTS_BY_DIRECTION[direction]:
-            raise ValueError(f"verdict {verdict!r} is not valid for direction {direction!r}")
+    def _decision_fits_direction(self) -> Self:
+        verdict, category = self.judgment.verdict, self.judgment.category
+        if verdict is not None and category is not None:
+            problem = decision_problem(verdict, category, self.input.direction)
+            if problem is not None:
+                raise ValueError(problem)
         return self
 
 

@@ -75,9 +75,12 @@ class CategoryMetrics(_Model):
 
 
 class AverageMetrics(_Model):
-    precision: float
+    # None when no averaged category was ever predicted.
+    precision: float | None
     recall: float
     f1: float
+    # Categories left out of the precision average because they were never predicted.
+    precision_excluded: int
 
 
 class Rate(_Model):
@@ -100,9 +103,19 @@ class Rates(_Model):
 
 
 class Cost(_Model):
+    """Summed usage and price, with the coverage needed to tell a total from a partial sum.
+
+    `usd` sums only the usage records that carry a price, and the token counts sum only
+    the items that report usage. They are totals only when `complete` is true.
+    """
+
     usd: float | None
     tokens_in: int
     tokens_out: int
+    items: int
+    items_with_usage: int
+    usage_with_price: int
+    complete: bool
 
 
 class Latency(_Model):
@@ -120,7 +133,7 @@ class Metrics(_Model):
     macro: AverageMetrics | None
     weighted: AverageMetrics | None
     rates: Rates
-    cost: Cost | None
+    cost: Cost
     latency_ms: Latency
 
 
@@ -221,18 +234,25 @@ def _rate(successes: int, n: int) -> Rate:
 def _averages(averages: Averages | None) -> AverageMetrics | None:
     if averages is None:
         return None
-    return AverageMetrics(precision=averages.precision, recall=averages.recall, f1=averages.f1)
+    return AverageMetrics(
+        precision=averages.precision,
+        recall=averages.recall,
+        f1=averages.f1,
+        precision_excluded=averages.precision_excluded,
+    )
 
 
-def _cost(items: Sequence[ItemResult]) -> Cost | None:
+def _cost(items: Sequence[ItemResult]) -> Cost:
     usages = [i.usage for i in items if i.usage is not None]
-    if not usages:
-        return None
     priced = [u.usd for u in usages if u.usd is not None]
     return Cost(
         usd=sum(priced) if priced else None,
         tokens_in=sum(u.tokens_in for u in usages),
         tokens_out=sum(u.tokens_out for u in usages),
+        items=len(items),
+        items_with_usage=len(usages),
+        usage_with_price=len(priced),
+        complete=len(usages) == len(items) and len(priced) == len(usages),
     )
 
 
@@ -266,6 +286,14 @@ def render_markdown(metrics: Metrics) -> str:
             _average_row("macro", metrics.macro),
             _average_row("weighted", metrics.weighted),
         ]
+        excluded = metrics.macro.precision_excluded
+        if excluded:
+            lines += [
+                "",
+                f"Average precision excludes {excluded} "
+                f"{'category' if excluded == 1 else 'categories'} never predicted, whose "
+                "precision is undefined; recall and F1 average over every category.",
+            ]
 
     lines += [
         "",
@@ -307,16 +335,25 @@ def render_markdown(metrics: Metrics) -> str:
         f"{_rate_text(rates.overblock_rate.error_rate)}; under the runtime's fail-closed "
         "output policy an output-direction error would reach the visitor as a refusal",
     ]
-    if metrics.cost is not None:
-        usd = "unknown" if metrics.cost.usd is None else f"${metrics.cost.usd:.4f}"
-        lines.append(
-            f"- cost: {usd}, {metrics.cost.tokens_in} tokens in, "
-            f"{metrics.cost.tokens_out} tokens out"
-        )
+    lines.append(f"- cost: {_cost_text(metrics.cost)}")
     latency = metrics.latency_ms
     if latency.p50 is not None:
         lines.append(f"- latency: p50 {latency.p50} ms, p95 {latency.p95} ms")
     return "\n".join(lines) + "\n"
+
+
+def _cost_text(cost: Cost) -> str:
+    if cost.items_with_usage == 0:
+        return "unknown, no item reported usage"
+    usd = "price unknown" if cost.usd is None else f"${cost.usd:.4f}"
+    tokens = f"{cost.tokens_in} tokens in, {cost.tokens_out} tokens out"
+    if cost.complete:
+        return f"{usd}, {tokens}"
+    return (
+        f"partial, not a total: {usd} (price known for {cost.usage_with_price} of "
+        f"{cost.items_with_usage} usage records), {tokens} (usage present for "
+        f"{cost.items_with_usage} of {cost.items} items)"
+    )
 
 
 def _average_row(name: str, averages: AverageMetrics) -> str:

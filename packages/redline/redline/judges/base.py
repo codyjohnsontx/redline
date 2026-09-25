@@ -13,9 +13,35 @@ from typing import Protocol, Self
 
 from pydantic import BaseModel, ConfigDict, Field, JsonValue, NonNegativeInt, model_validator
 
-from redline.datasets.schema import CategoryId, Context, Direction, Record, Verdict
+from redline.datasets.schema import (
+    NO_CATEGORY,
+    VERDICTS_BY_DIRECTION,
+    CategoryId,
+    Context,
+    Direction,
+    Record,
+    Verdict,
+)
 
 DEFAULT_CONCURRENCY = 8
+
+
+def decision_problem(
+    verdict: Verdict, category: str, direction: Direction | None = None
+) -> str | None:
+    """Why a judge's decision is inconsistent, or None when it is sound.
+
+    `allow` goes with category `none` and every other verdict with a live category,
+    so a decision can never score as a category hit while its verdict is wrong.
+    With `direction`, the verdict must also be one that direction allows.
+    """
+    if direction is not None and verdict not in VERDICTS_BY_DIRECTION[direction]:
+        return f"verdict {verdict!r} is not valid for direction {direction!r}"
+    if verdict == "allow" and category != NO_CATEGORY:
+        return f"verdict 'allow' requires category {NO_CATEGORY!r}, not {category!r}"
+    if verdict != "allow" and category == NO_CATEGORY:
+        return f"verdict {verdict!r} requires a category other than {NO_CATEGORY!r}"
+    return None
 
 
 class _Model(BaseModel):
@@ -71,6 +97,9 @@ class Judgment(_Model):
         if self.error is None:
             if self.verdict is None or self.category is None:
                 raise ValueError("a judgment without error requires verdict and category")
+            problem = decision_problem(self.verdict, self.category)
+            if problem is not None:
+                raise ValueError(problem)
         elif self.verdict is not None or self.category is not None:
             raise ValueError("an errored judgment must not carry a verdict or category")
         return self

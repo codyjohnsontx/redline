@@ -9,7 +9,6 @@ results/<run_id>/
 
 import asyncio
 import hashlib
-import json
 import secrets
 import subprocess
 from collections import Counter
@@ -18,16 +17,53 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from pydantic import BaseModel, ConfigDict, ValidationError
+
 from redline.datasets.load import DatasetError
-from redline.datasets.schema import VERDICTS_BY_DIRECTION, Record
+from redline.datasets.schema import Record
 from redline.datasets.splits import Split
 from redline.datasets.validate import validate_paths
-from redline.judges.base import DEFAULT_CONCURRENCY, Judge, JudgeInput, Judgment
-from redline.metrics.report import DatasetInfo, ItemResult, Metrics, compute_metrics
+from redline.judges.base import (
+    DEFAULT_CONCURRENCY,
+    Judge,
+    JudgeInput,
+    Judgment,
+    decision_problem,
+)
+from redline.metrics.report import Cost, DatasetInfo, ItemResult, Metrics, compute_metrics
 
 
 class EvalError(Exception):
     pass
+
+
+class RunArtifactError(Exception):
+    """A results directory whose files are missing, invalid, or do not belong together."""
+
+
+class FileHash(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    path: str
+    sha256: str
+
+
+class RunInfo(BaseModel):
+    """run.json: where a run came from, and the hashes that tie its artifacts together."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    run_id: str
+    git_sha: str | None
+    judge_id: str
+    files: list[FileHash]
+    split: str | None
+    n: int
+    dataset_sha256: str
+    dataset_sha256_by_split: dict[str, str]
+    started: datetime
+    finished: datetime
+    cost: Cost
 
 
 @dataclass(frozen=True)
@@ -91,27 +127,39 @@ def run_eval(
     (run_dir / "items.jsonl").write_text(
         "".join(item.model_dump_json() + "\n" for item in items), "utf-8"
     )
-    run_info = {
-        "run_id": run_id,
-        "git_sha": _git_sha(),
-        "judge_id": judge.id,
-        "files": [{"path": str(p), "sha256": _file_sha(p)} for p in paths],
-        "dataset_sha256": dataset_sha,
-        "dataset_sha256_by_split": _dataset_sha_by_split(gold),
-        "started": started.isoformat(),
-        "finished": datetime.now(UTC).isoformat(),
-        "cost_usd": metrics.cost.usd if metrics.cost is not None else None,
-    }
-    (run_dir / "run.json").write_text(json.dumps(run_info, indent=2) + "\n", "utf-8")
+    run_info = RunInfo(
+        run_id=run_id,
+        git_sha=_git_sha(),
+        judge_id=judge.id,
+        files=[FileHash(path=str(p), sha256=_file_sha(p)) for p in paths],
+        split=split,
+        n=len(gold),
+        dataset_sha256=dataset_sha,
+        dataset_sha256_by_split=_dataset_sha_by_split(gold),
+        started=started,
+        finished=datetime.now(UTC),
+        cost=metrics.cost,
+    )
+    (run_dir / "run.json").write_text(run_info.model_dump_json(indent=2) + "\n", "utf-8")
     return EvalRun(run_dir, metrics)
 
 
 def _item(record: Record, judgment: Judgment) -> ItemResult:
-    """Score a judgment, treating a verdict the item's direction does not allow as an error."""
+    """Score a judgment, turning an inconsistent decision into a judge error.
+
+    Judgment validation already enforces this, but a judge can bypass it (for example
+    with `model_construct`), and the direction check needs the record.
+    """
     verdict, category, error = judgment.verdict, judgment.category, judgment.error
-    if verdict is not None and verdict not in VERDICTS_BY_DIRECTION[record.direction]:
+    if error is None:
+        if verdict is None or category is None:
+            problem = "judgment has no error but lacks a verdict or category"
+        else:
+            problem = decision_problem(verdict, category, record.direction)
+        if problem is not None:
+            verdict, category, error = None, None, problem
+    else:
         verdict, category = None, None
-        error = f"verdict {judgment.verdict!r} is not valid for direction {record.direction!r}"
     return ItemResult(
         id=record.id,
         direction=record.direction,
@@ -129,6 +177,64 @@ def _item(record: Record, judgment: Judgment) -> ItemResult:
 
 def load_metrics(run_dir: Path) -> Metrics:
     return Metrics.model_validate_json((run_dir / "metrics.json").read_bytes())
+
+
+def load_run(run_dir: Path) -> Metrics:
+    """Load a run's metrics after checking that its three files belong together.
+
+    metrics.json must be exactly what its items.jsonl computes to, and run.json must
+    name the same run, judge, split, record count, dataset hash, and cost, so files
+    from different runs or splits cannot be summarized as one.
+    """
+    paths = {name: run_dir / name for name in ("metrics.json", "run.json", "items.jsonl")}
+    missing = [str(path) for path in paths.values() if not path.is_file()]
+    if missing:
+        raise RunArtifactError(f"missing run files: {', '.join(missing)}")
+    try:
+        metrics = Metrics.model_validate_json(paths["metrics.json"].read_bytes())
+        run = RunInfo.model_validate_json(paths["run.json"].read_bytes())
+        items = [
+            ItemResult.model_validate_json(line)
+            for line in paths["items.jsonl"].read_bytes().splitlines()
+            if line.strip()
+        ]
+    except ValidationError as exc:
+        raise RunArtifactError(f"invalid run file in {run_dir}: {exc}") from exc
+
+    dataset = metrics.dataset
+    mismatches = [
+        f"{field}: run.json has {theirs!r}, metrics.json has {ours!r}"
+        for field, theirs, ours in (
+            ("run_id", run.run_id, metrics.run_id),
+            ("judge_id", run.judge_id, metrics.judge_id),
+            ("split", run.split, dataset.split),
+            ("n", run.n, dataset.n),
+            ("dataset sha256", run.dataset_sha256, dataset.sha256),
+            ("cost", run.cost, metrics.cost),
+        )
+        if theirs != ours
+    ]
+    if dataset.split is not None and run.dataset_sha256_by_split != {dataset.split: dataset.sha256}:
+        mismatches.append(
+            f"dataset sha256 by split: run.json has {run.dataset_sha256_by_split!r}, "
+            f"metrics.json has split {dataset.split!r} with sha256 {dataset.sha256!r}"
+        )
+    if len({item.id for item in items}) != len(items):
+        mismatches.append("items.jsonl repeats a record id")
+    recomputed = compute_metrics(
+        run_id=metrics.run_id,
+        target=metrics.target,
+        judge_id=metrics.judge_id,
+        dataset=dataset,
+        items=items,
+    )
+    if len(items) != dataset.n or recomputed != metrics:
+        mismatches.append(f"metrics.json does not match the {len(items)} item(s) in items.jsonl")
+    if mismatches:
+        raise RunArtifactError(
+            f"{run_dir} mixes artifacts that do not belong together: " + "; ".join(mismatches)
+        )
+    return metrics
 
 
 def _dataset_sha(records: Sequence[Record]) -> str:
