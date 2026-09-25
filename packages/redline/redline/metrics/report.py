@@ -119,8 +119,12 @@ class Cost(_Model):
 
 
 class Latency(_Model):
+    """Nearest-rank percentiles over every item's judge latency, errored calls included."""
+
     p50: int | None
     p95: int | None
+    n: int
+    n_errored: int
 
 
 class Metrics(_Model):
@@ -150,7 +154,8 @@ def compute_metrics(
     A judge error is a miss for recall: a false negative for its gold category and
     outside every confusion column. The block, redirect, and overblock rates describe
     what the judge said, so they count judged items only; the overblock rate reports
-    the errors in its basis beside it as `error_rate`.
+    the errors in its basis beside it as `error_rate`. Latency covers every item, since
+    errored and timed-out calls are the slow tail.
     """
     confusion: dict[str, Confusion] = {}
     for direction, allowed in VERDICTS_BY_DIRECTION.items():
@@ -221,8 +226,10 @@ def compute_metrics(
         rates=rates,
         cost=_cost(items),
         latency_ms=Latency(
-            p50=_percentile([i.latency_ms for i in judged], 50),
-            p95=_percentile([i.latency_ms for i in judged], 95),
+            p50=_percentile([i.latency_ms for i in items], 50),
+            p95=_percentile([i.latency_ms for i in items], 95),
+            n=len(items),
+            n_errored=len(items) - len(judged),
         ),
     )
 
@@ -338,7 +345,10 @@ def render_markdown(metrics: Metrics) -> str:
     lines.append(f"- cost: {_cost_text(metrics.cost)}")
     latency = metrics.latency_ms
     if latency.p50 is not None:
-        lines.append(f"- latency: p50 {latency.p50} ms, p95 {latency.p95} ms")
+        lines.append(
+            f"- latency: p50 {latency.p50} ms, p95 {latency.p95} ms "
+            f"(n {latency.n}, {latency.n_errored} errored)"
+        )
     return "\n".join(lines) + "\n"
 
 

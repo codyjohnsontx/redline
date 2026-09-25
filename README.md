@@ -46,7 +46,7 @@ uv run redline report results/<run_id>
 
 Cost and token figures are totals only when every item reported usage with a price; otherwise they are labelled partial, with how many items and usage records they cover. Average precision leaves out categories that were never predicted, whose precision is undefined, and the report says how many; average recall and F1 cover every category with gold positives.
 
-Two offline judges ship with the engine. `--judge keyword --rules FILE` is a regex baseline whose rules are a target's JSON file (see `packages/redline/redline/judges/keyword.py` for the format). `--judge recorded --recording FILE` replays judgments from a JSONL recording of `{"input": ..., "judgment": ...}` lines, matched by input content. A judge error counts as a miss for per-category recall and block recall. The block, redirect, and overblock rates count only what the judge actually said, so errors are left out of them; the overblock rate reports its basis's judge error rate beside it.
+Two offline judges ship with the engine. `--judge keyword --rules FILE` is a regex baseline whose rules are a target's JSON file (see `packages/redline/redline/judges/keyword.py` for the format). `--judge recorded --recording FILE` replays judgments from a JSONL recording of `{"input": ..., "judgment": ...}` lines, matched by input content. A judge error counts as a miss for per-category recall and block recall. The block, redirect, and overblock rates count only what the judge actually said, so errors are left out of them; the overblock rate reports its basis's judge error rate beside it. Latency p50 and p95 cover every record, errored and timed-out calls included, and the report states how many records they cover and how many of those errored.
 
 ## License
 

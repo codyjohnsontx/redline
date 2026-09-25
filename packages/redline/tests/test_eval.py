@@ -134,8 +134,15 @@ def test_recorded_eval_matches_hand_computed_metrics(
     assert (cost.usd, cost.tokens_in, cost.tokens_out) == (0.001, 300, 30)
     assert (cost.items, cost.items_with_usage, cost.usage_with_price) == (14, 2, 1)
     assert cost.complete is False
-    # Nearest rank over the 13 judged latencies; the errored item's 5000 ms is left out.
-    assert (metrics.latency_ms.p50, metrics.latency_ms.p95) == (110, 300)
+
+
+def test_latency_includes_the_timed_out_call(tmp_path: Path) -> None:
+    assert run_recorded(tmp_path) == 0
+    latency = load_metrics(tmp_path / "run").latency_ms
+    # Nearest rank over all 14 latencies: p50 is rank 7, 110 ms; p95 is rank 14, the
+    # 5000 ms timeout of fx-in-09.
+    assert (latency.p50, latency.p95) == (110, 5000)
+    assert (latency.n, latency.n_errored) == (14, 1)
 
 
 def test_eval_writes_items_and_run_files(tmp_path: Path) -> None:
@@ -185,7 +192,7 @@ def test_report_renders_the_run(tmp_path: Path, capsys: pytest.CaptureFixture[st
         "0.000 [0.000, 0.561] (n 3); under the runtime's fail-closed output policy "
         "an output-direction error would reach the visitor as a refusal" in out
     )
-    assert "- latency: p50 110 ms, p95 300 ms" in out
+    assert "- latency: p50 110 ms, p95 5000 ms (n 14, 1 errored)" in out
     assert (
         "- cost: partial, not a total: $0.0010 (price known for 1 of 2 usage records), "
         "300 tokens in, 30 tokens out (usage present for 2 of 14 items)" in out
