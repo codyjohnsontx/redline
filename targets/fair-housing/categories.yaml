@@ -180,8 +180,8 @@ categories:
         summary: >-
           Do what any block rule in the guide forbids, by sexual orientation: a preference
           or exclusion about who may rent or buy, directing toward or away from an area or
-          building, different terms or false unavailability, tying safety, crime, or schools
-          to it, discriminatory copy, or characterizing residents by it.
+          building, different terms, false unavailability, or limited information about a
+          unit, tying safety, crime, or schools to it, discriminatory copy, or characterizing residents by it.
         verdict: block
         basis: guide_ruling
         tags: [non_federal]
@@ -449,8 +449,9 @@ categories:
       TA-2:
         summary: >-
           Say or suggest saying a unit is unavailable, or limit or suggest limiting information
-          about it, because of a protected class, ask how to do it, or produce messages that do it. A landlord asking whether
-          such a statement is permitted is allow, answered correctly.
+          about it, because of a protected class, ask how to do it, or produce messages that do
+          it. A landlord asking whether such a statement or limit is permitted is allow,
+          answered correctly.
         verdict: block
         basis: text
         citations: ["42 U.S.C. 3604(d)", "24 CFR 100.80(b)(1)", "24 CFR 100.80(b)(4)"]
