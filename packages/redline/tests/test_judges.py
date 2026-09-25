@@ -143,6 +143,13 @@ def test_recorded_judge_rejects_duplicate_and_invalid_recordings(tmp_path: Path)
     with pytest.raises(RecordingError, match=f"{invalid}:1:"):
         RecordedJudge.from_file(invalid)
 
+    record["judgment"]["error"] = None
+    record["input"]["direction"] = "output"  # redirect is input-only
+    off_direction = tmp_path / "off_direction.jsonl"
+    off_direction.write_text(json.dumps(record) + "\n", encoding="utf-8")
+    with pytest.raises(RecordingError, match=f"(?s){off_direction}:1:.*not valid for direction"):
+        RecordedJudge.from_file(off_direction)
+
 
 class _SlowJudge(BaseJudge):
     def __init__(self) -> None:

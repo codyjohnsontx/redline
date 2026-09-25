@@ -30,7 +30,8 @@ from pathlib import Path
 import pytest
 
 from redline.cli import main
-from redline.evaluate import load_metrics
+from redline.evaluate import load_metrics, run_eval
+from redline.judges.base import BaseJudge, JudgeInput, Judgment
 
 from .conftest import SAMPLES
 
@@ -216,3 +217,30 @@ def test_eval_rejects_an_invalid_dataset(
 def test_report_refuses_a_missing_run(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     assert main(["report", str(tmp_path)]) == 2
     assert "metrics.json: not a file" in capsys.readouterr().err
+
+
+class _RedirectJudge(BaseJudge):
+    @property
+    def id(self) -> str:
+        return "redirect"
+
+    async def judge(self, item: JudgeInput) -> Judgment:
+        return Judgment(verdict="redirect", category="alpha", judge_id=self.id)
+
+
+def test_eval_counts_a_verdict_invalid_for_its_direction_as_a_judge_error(
+    tmp_path: Path,
+) -> None:
+    run = run_eval([DATASET], _RedirectJudge(), out_dir=tmp_path, run_id="run")
+    n_output = run.metrics.dataset.n_by_direction["output"]
+    assert n_output > 0
+    assert run.metrics.rates.judge_errors == n_output
+    items = [
+        json.loads(line)
+        for line in (run.run_dir / "items.jsonl").read_text(encoding="utf-8").splitlines()
+    ]
+    outputs = [i for i in items if i["direction"] == "output"]
+    assert all(i["predicted_verdict"] is None and i["predicted_category"] is None for i in outputs)
+    assert {i["error"] for i in outputs} == {
+        "verdict 'redirect' is not valid for direction 'output'"
+    }

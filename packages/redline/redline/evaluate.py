@@ -18,10 +18,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from redline.datasets.load import DatasetError
-from redline.datasets.schema import Record
+from redline.datasets.schema import VERDICTS_BY_DIRECTION, Record
 from redline.datasets.splits import Split
 from redline.datasets.validate import validate_paths
-from redline.judges.base import DEFAULT_CONCURRENCY, Judge, JudgeInput
+from redline.judges.base import DEFAULT_CONCURRENCY, Judge, JudgeInput, Judgment
 from redline.metrics.report import DatasetInfo, ItemResult, Metrics, compute_metrics
 
 
@@ -70,22 +70,7 @@ def run_eval(
     judgments = asyncio.run(
         judge.judge_many([JudgeInput.from_record(r) for r in gold], concurrency=concurrency)
     )
-    items = [
-        ItemResult(
-            id=record.id,
-            direction=record.direction,
-            source_kind=record.source.kind,
-            gold_verdict=record.verdict,
-            gold_category=record.category,
-            predicted_verdict=judgment.verdict,
-            predicted_category=judgment.category,
-            error=judgment.error,
-            judge_id=judgment.judge_id,
-            latency_ms=judgment.latency_ms,
-            usage=judgment.usage,
-        )
-        for record, judgment in zip(gold, judgments, strict=True)
-    ]
+    items = [_item(record, judgment) for record, judgment in zip(gold, judgments, strict=True)]
     metrics = compute_metrics(
         run_id=run_id,
         target=targets[0],
@@ -117,6 +102,27 @@ def run_eval(
     }
     (run_dir / "run.json").write_text(json.dumps(run_info, indent=2) + "\n", "utf-8")
     return EvalRun(run_dir, metrics)
+
+
+def _item(record: Record, judgment: Judgment) -> ItemResult:
+    """Score a judgment, treating a verdict the item's direction does not allow as an error."""
+    verdict, category, error = judgment.verdict, judgment.category, judgment.error
+    if verdict is not None and verdict not in VERDICTS_BY_DIRECTION[record.direction]:
+        verdict, category = None, None
+        error = f"verdict {judgment.verdict!r} is not valid for direction {record.direction!r}"
+    return ItemResult(
+        id=record.id,
+        direction=record.direction,
+        source_kind=record.source.kind,
+        gold_verdict=record.verdict,
+        gold_category=record.category,
+        predicted_verdict=verdict,
+        predicted_category=category,
+        error=error,
+        judge_id=judgment.judge_id,
+        latency_ms=judgment.latency_ms,
+        usage=judgment.usage,
+    )
 
 
 def load_metrics(run_dir: Path) -> Metrics:
