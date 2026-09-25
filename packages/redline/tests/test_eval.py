@@ -142,7 +142,33 @@ def test_latency_includes_the_timed_out_call(tmp_path: Path) -> None:
     # Nearest rank over all 14 latencies: p50 is rank 7, 110 ms; p95 is rank 14, the
     # 5000 ms timeout of fx-in-09.
     assert (latency.p50, latency.p95) == (110, 5000)
-    assert (latency.n, latency.n_errored) == (14, 1)
+    assert (latency.n, latency.n_errored, latency.n_unmeasured) == (14, 1, 0)
+
+
+def test_latency_leaves_out_inputs_never_judged(tmp_path: Path) -> None:
+    # Drop the recordings of fx-in-01 to fx-in-07: those inputs make no call, so they
+    # have no latency, rather than a 0 ms that would drag p50 down to 0.
+    kept = RECORDING.read_text(encoding="utf-8").splitlines()[7:]
+    recording = tmp_path / "partial.jsonl"
+    recording.write_text("\n".join(kept) + "\n", encoding="utf-8")
+    args = ["eval", str(DATASET), "--judge", "recorded", "--recording", str(recording)]
+    assert main([*args, "--out", str(tmp_path), "--run-id", "run"]) == 0
+
+    run_dir = tmp_path / "run"
+    items = [json.loads(line) for line in (run_dir / "items.jsonl").read_text().splitlines()]
+    unmeasured = [i["id"] for i in items if i["latency_ms"] is None]
+    assert unmeasured == [f"fx-in-0{n}" for n in range(1, 8)]
+    metrics = load_metrics(run_dir)
+    assert metrics.rates.judge_errors == 8
+    # Nearest rank over the 7 measured latencies 50, 70, 100, 110, 130, 250, 5000:
+    # p50 is rank 4, p95 is rank 7, the fx-in-09 timeout.
+    latency = metrics.latency_ms
+    assert (latency.p50, latency.p95) == (110, 5000)
+    assert (latency.n, latency.n_errored, latency.n_unmeasured) == (7, 1, 7)
+    assert (
+        "- latency: p50 110 ms, p95 5000 ms (7 measured, 1 of them errored; 7 unmeasured)"
+        in render_markdown(metrics)
+    )
 
 
 def test_eval_writes_items_and_run_files(tmp_path: Path) -> None:
@@ -192,7 +218,9 @@ def test_report_renders_the_run(tmp_path: Path, capsys: pytest.CaptureFixture[st
         "0.000 [0.000, 0.561] (n 3); under the runtime's fail-closed output policy "
         "an output-direction error would reach the visitor as a refusal" in out
     )
-    assert "- latency: p50 110 ms, p95 5000 ms (n 14, 1 errored)" in out
+    assert (
+        "- latency: p50 110 ms, p95 5000 ms (14 measured, 1 of them errored; 0 unmeasured)" in out
+    )
     assert (
         "- cost: partial, not a total: $0.0010 (price known for 1 of 2 usage records), "
         "300 tokens in, 30 tokens out (usage present for 2 of 14 items)" in out

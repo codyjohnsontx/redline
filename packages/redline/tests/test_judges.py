@@ -73,6 +73,7 @@ def test_keyword_judge_reports_a_target_mismatch_as_an_error() -> None:
     judgment = judge_one(judge, item)
     assert judgment.verdict is None
     assert judgment.error == "rules are for target 'fixture', not 'other'"
+    assert judgment.latency_ms is None
 
 
 def test_keyword_judge_id_follows_the_rules() -> None:
@@ -124,6 +125,7 @@ def test_recorded_judge_reports_a_missing_recording_as_an_error() -> None:
     judge = RecordedJudge.from_file(RECORDING)
     judgment = judge_one(judge, fixture_input("A text nobody recorded."))
     assert judgment.error == "no recorded judgment for this input"
+    assert judgment.latency_ms is None
     # Context is part of the match: the same text as output is a different input.
     other = judge_one(judge, fixture_input("Exclude everyone who is alpha.", direction="output"))
     assert other.error is not None

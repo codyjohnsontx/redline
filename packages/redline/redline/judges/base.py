@@ -86,7 +86,8 @@ class Judgment(_Model):
     # Only when the provider gives one; never invented.
     confidence: float | None = None
     judge_id: str
-    latency_ms: NonNegativeInt = 0
+    # None when no call was made, so there is no latency to measure.
+    latency_ms: NonNegativeInt | None = None
     usage: Usage | None = None
     # Provider payload, kept for audit.
     raw: dict[str, JsonValue] = Field(default_factory=dict[str, JsonValue])
@@ -105,7 +106,7 @@ class Judgment(_Model):
         return self
 
     @classmethod
-    def failed(cls, judge_id: str, error: str, *, latency_ms: int = 0) -> Self:
+    def failed(cls, judge_id: str, error: str, *, latency_ms: int | None = None) -> Self:
         return cls(
             verdict=None, category=None, judge_id=judge_id, latency_ms=latency_ms, error=error
         )

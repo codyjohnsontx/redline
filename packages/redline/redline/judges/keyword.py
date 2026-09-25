@@ -99,12 +99,12 @@ class KeywordJudge(BaseJudge):
         return self._id
 
     async def judge(self, item: JudgeInput) -> Judgment:
-        started = time.perf_counter()
         if item.target != self._rules.target:
             return Judgment.failed(
                 self._id,
                 f"rules are for target {self._rules.target!r}, not {item.target!r}",
             )
+        started = time.perf_counter()
         for rule, patterns in self._compiled:
             if item.direction not in rule.directions:
                 continue

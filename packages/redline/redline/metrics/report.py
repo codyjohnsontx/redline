@@ -2,7 +2,7 @@
 
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, NonNegativeInt
 
 from redline.datasets.schema import (
     NO_CATEGORY,
@@ -40,7 +40,7 @@ class ItemResult(_Model):
     predicted_category: str | None
     error: str | None
     judge_id: str
-    latency_ms: int
+    latency_ms: NonNegativeInt | None
     usage: Usage | None
 
 
@@ -119,12 +119,17 @@ class Cost(_Model):
 
 
 class Latency(_Model):
-    """Nearest-rank percentiles over every item's judge latency, errored calls included."""
+    """Nearest-rank percentiles over every measured judge latency, errored calls included.
+
+    `n` items were measured, `n_errored` of them errored; `n_unmeasured` items made no
+    call, so they have no latency and are left out.
+    """
 
     p50: int | None
     p95: int | None
     n: int
     n_errored: int
+    n_unmeasured: int
 
 
 class Metrics(_Model):
@@ -154,8 +159,8 @@ def compute_metrics(
     A judge error is a miss for recall: a false negative for its gold category and
     outside every confusion column. The block, redirect, and overblock rates describe
     what the judge said, so they count judged items only; the overblock rate reports
-    the errors in its basis beside it as `error_rate`. Latency covers every item, since
-    errored and timed-out calls are the slow tail.
+    the errors in its basis beside it as `error_rate`. Latency covers every measured
+    item, since errored and timed-out calls are the slow tail.
     """
     confusion: dict[str, Confusion] = {}
     for direction, allowed in VERDICTS_BY_DIRECTION.items():
@@ -225,12 +230,7 @@ def compute_metrics(
         weighted=_averages(weighted_average(counts)),
         rates=rates,
         cost=_cost(items),
-        latency_ms=Latency(
-            p50=_percentile([i.latency_ms for i in items], 50),
-            p95=_percentile([i.latency_ms for i in items], 95),
-            n=len(items),
-            n_errored=len(items) - len(judged),
-        ),
+        latency_ms=_latency(items),
     )
 
 
@@ -260,6 +260,17 @@ def _cost(items: Sequence[ItemResult]) -> Cost:
         items_with_usage=len(usages),
         usage_with_price=len(priced),
         complete=len(usages) == len(items) and len(priced) == len(usages),
+    )
+
+
+def _latency(items: Sequence[ItemResult]) -> Latency:
+    latencies = [i.latency_ms for i in items if i.latency_ms is not None]
+    return Latency(
+        p50=_percentile(latencies, 50),
+        p95=_percentile(latencies, 95),
+        n=len(latencies),
+        n_errored=sum(i.latency_ms is not None and i.error is not None for i in items),
+        n_unmeasured=len(items) - len(latencies),
     )
 
 
@@ -343,12 +354,7 @@ def render_markdown(metrics: Metrics) -> str:
         "output policy an output-direction error would reach the visitor as a refusal",
     ]
     lines.append(f"- cost: {_cost_text(metrics.cost)}")
-    latency = metrics.latency_ms
-    if latency.p50 is not None:
-        lines.append(
-            f"- latency: p50 {latency.p50} ms, p95 {latency.p95} ms "
-            f"(n {latency.n}, {latency.n_errored} errored)"
-        )
+    lines.append(f"- latency: {_latency_text(metrics.latency_ms)}")
     return "\n".join(lines) + "\n"
 
 
@@ -364,6 +370,16 @@ def _cost_text(cost: Cost) -> str:
         f"{cost.items_with_usage} usage records), {tokens} (usage present for "
         f"{cost.items_with_usage} of {cost.items} items)"
     )
+
+
+def _latency_text(latency: Latency) -> str:
+    counts = (
+        f"{latency.n} measured, {latency.n_errored} of them errored; "
+        f"{latency.n_unmeasured} unmeasured"
+    )
+    if latency.p50 is None:
+        return f"none measured ({counts})"
+    return f"p50 {latency.p50} ms, p95 {latency.p95} ms ({counts})"
 
 
 def _average_row(name: str, averages: AverageMetrics) -> str:
