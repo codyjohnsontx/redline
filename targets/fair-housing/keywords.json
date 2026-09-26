@@ -10,15 +10,15 @@
         "output"
       ],
       "patterns": [
-        "\\bWhite private home\\b",
-        "\\bColored home\\b",
-        "\\bNegro\\b",
-        "\\bBlack\\b",
-        "\\bCaucasian\\b",
-        "\\bOriental\\b",
-        "\\bAmerican Indian\\b",
-        "\\bWhite\\b",
-        "\\bColored\\b"
+        "\\b(?:White[\\s-]+private[\\s-]+home|White[\\s-]+private[\\s-]+homes)\\b",
+        "\\b(?:Colored[\\s-]+home|Colored[\\s-]+homes)\\b",
+        "\\b(?:Negro|Negroes)\\b",
+        "\\b(?:Black|Blacks)\\b",
+        "\\b(?:Caucasian|Caucasians)\\b",
+        "\\b(?:Oriental|Orientals)\\b",
+        "\\b(?:American[\\s-]+Indian|American[\\s-]+Indians)\\b",
+        "\\b(?:White|Whites)\\b",
+        "\\b(?:Colored)\\b"
       ]
     },
     {
@@ -30,11 +30,11 @@
         "output"
       ],
       "patterns": [
-        "\\bJewish home\\b",
-        "\\bProtestant\\b",
-        "\\bChristian\\b",
-        "\\bCatholic\\b",
-        "\\bJew\\b"
+        "\\b(?:Jewish[\\s-]+home|Jewish[\\s-]+homes)\\b",
+        "\\b(?:Protestant|Protestants)\\b",
+        "\\b(?:Christian|Christians)\\b",
+        "\\b(?:Catholic|Catholics)\\b",
+        "\\b(?:Jew|Jews)\\b"
       ]
     },
     {
@@ -46,20 +46,20 @@
         "output"
       ],
       "patterns": [
-        "\\bHispanic residence\\b",
-        "\\bMexican American\\b",
-        "\\bPuerto Rican\\b",
-        "\\bPhilippine\\b",
-        "\\bPolish\\b",
-        "\\bHungarian\\b",
-        "\\bIrish\\b",
-        "\\bItalian\\b",
-        "\\bChicano\\b",
-        "\\bAfrican\\b",
-        "\\bHispanic\\b",
-        "\\bChinese\\b",
-        "\\bIndian\\b",
-        "\\bLatino\\b"
+        "\\b(?:Hispanic[\\s-]+residence|Hispanic[\\s-]+residences)\\b",
+        "\\b(?:Mexican[\\s-]+American|Mexican[\\s-]+Americans)\\b",
+        "\\b(?:Puerto[\\s-]+Rican|Puerto[\\s-]+Ricans)\\b",
+        "\\b(?:Philippine)\\b",
+        "\\b(?:Polish)\\b",
+        "\\b(?:Hungarian|Hungarians)\\b",
+        "\\b(?:Irish)\\b",
+        "\\b(?:Italian|Italians)\\b",
+        "\\b(?:Chicano|Chicanos)\\b",
+        "\\b(?:African|Africans)\\b",
+        "\\b(?:Hispanic|Hispanics)\\b",
+        "\\b(?:Chinese)\\b",
+        "\\b(?:Indian|Indians)\\b",
+        "\\b(?:Latino|Latinos)\\b"
       ]
     },
     {
@@ -71,11 +71,11 @@
         "output"
       ],
       "patterns": [
-        "\\badult building\\b",
-        "\\badults\\b",
-        "\\bchildren\\b",
-        "\\bsingles\\b",
-        "\\bmature persons\\b"
+        "\\b(?:adult[\\s-]+building|adult[\\s-]+buildings)\\b",
+        "\\b(?:adults)\\b",
+        "\\b(?:children)\\b",
+        "\\b(?:singles)\\b",
+        "\\b(?:mature[\\s-]+persons)\\b"
       ]
     },
     {
@@ -87,14 +87,14 @@
         "output"
       ],
       "patterns": [
-        "\\bcrippled\\b",
-        "\\bblind\\b",
-        "\\bdeaf\\b",
-        "\\bmentally ill\\b",
-        "\\bretarded\\b",
-        "\\bimpaired\\b",
-        "\\bhandicapped\\b",
-        "\\bphysically fit\\b"
+        "\\b(?:crippled)\\b",
+        "\\b(?:blind)\\b",
+        "\\b(?:deaf)\\b",
+        "\\b(?:mentally[\\s-]+ill)\\b",
+        "\\b(?:retarded)\\b",
+        "\\b(?:impaired)\\b",
+        "\\b(?:handicapped)\\b",
+        "\\b(?:physically[\\s-]+fit)\\b"
       ]
     },
     {
@@ -105,13 +105,13 @@
         "input"
       ],
       "patterns": [
-        "\\brestricted\\b",
-        "\\bexclusive\\b",
-        "\\bprivate\\b",
-        "\\bintegrated\\b",
-        "\\btraditional\\b",
-        "\\bboard approval\\b",
-        "\\bmembership approval\\b"
+        "\\b(?:restricted)\\b",
+        "\\b(?:exclusive)\\b",
+        "\\b(?:private)\\b",
+        "\\b(?:integrated)\\b",
+        "\\b(?:traditional)\\b",
+        "\\b(?:board[\\s-]+approval)\\b",
+        "\\b(?:membership[\\s-]+approval)\\b"
       ]
     }
   ]
