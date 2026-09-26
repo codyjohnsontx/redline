@@ -1,0 +1,118 @@
+{
+  "target": "fair-housing",
+  "rules": [
+    {
+      "id": "RC-1",
+      "category": "race_color",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\b(?:White[\\s-]+private[\\s-]+home|White[\\s-]+private[\\s-]+homes)\\b",
+        "\\b(?:Colored[\\s-]+home|Colored[\\s-]+homes)\\b",
+        "\\b(?:Negro|Negroes)\\b",
+        "\\b(?:Black|Blacks)\\b",
+        "\\b(?:Caucasian|Caucasians)\\b",
+        "\\b(?:Oriental|Orientals)\\b",
+        "\\b(?:American[\\s-]+Indian|American[\\s-]+Indians)\\b",
+        "\\b(?:White|Whites)\\b",
+        "\\b(?:Colored)\\b"
+      ]
+    },
+    {
+      "id": "RL-1",
+      "category": "religion",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\b(?:Jewish[\\s-]+home|Jewish[\\s-]+homes)\\b",
+        "\\b(?:Protestant|Protestants)\\b",
+        "\\b(?:Christian|Christians)\\b",
+        "\\b(?:Catholic|Catholics)\\b",
+        "\\b(?:Jew|Jews)\\b"
+      ]
+    },
+    {
+      "id": "NO-1",
+      "category": "national_origin",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\b(?:Hispanic[\\s-]+residence|Hispanic[\\s-]+residences)\\b",
+        "\\b(?:Mexican[\\s-]+American|Mexican[\\s-]+Americans)\\b",
+        "\\b(?:Puerto[\\s-]+Rican|Puerto[\\s-]+Ricans)\\b",
+        "\\b(?:Philippine)\\b",
+        "\\b(?:Polish)\\b",
+        "\\b(?:Hungarian|Hungarians)\\b",
+        "\\b(?:Irish)\\b",
+        "\\b(?:Italian|Italians)\\b",
+        "\\b(?:Chicano|Chicanos)\\b",
+        "\\b(?:African|Africans)\\b",
+        "\\b(?:Hispanic|Hispanics)\\b",
+        "\\b(?:Chinese)\\b",
+        "\\b(?:Indian|Indians)\\b",
+        "\\b(?:Latino|Latinos)\\b"
+      ]
+    },
+    {
+      "id": "FS-1",
+      "category": "familial_status",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\b(?:adult[\\s-]+building|adult[\\s-]+buildings)\\b",
+        "\\b(?:adults)\\b",
+        "\\b(?:children)\\b",
+        "\\b(?:singles)\\b",
+        "\\b(?:mature[\\s-]+persons)\\b"
+      ]
+    },
+    {
+      "id": "DS-1",
+      "category": "disability",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\b(?:crippled)\\b",
+        "\\b(?:blind)\\b",
+        "\\b(?:deaf)\\b",
+        "\\b(?:mentally[\\s-]+ill)\\b",
+        "\\b(?:retarded)\\b",
+        "\\b(?:impaired)\\b",
+        "\\b(?:handicapped)\\b",
+        "\\b(?:physically[\\s-]+fit)\\b"
+      ]
+    },
+    {
+      "id": "AD-2",
+      "category": "advertising_language",
+      "verdict": "redirect",
+      "directions": [
+        "input"
+      ],
+      "patterns": [
+        "\\b(?:restricted)\\b",
+        "\\b(?:exclusive)\\b",
+        "\\b(?:private)\\b",
+        "\\b(?:integrated)\\b",
+        "\\b(?:traditional)\\b",
+        "\\b(?:board[\\s-]+approval)\\b",
+        "\\b(?:membership[\\s-]+approval)\\b"
+      ]
+    }
+  ]
+}
