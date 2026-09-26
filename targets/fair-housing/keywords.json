@@ -1,0 +1,118 @@
+{
+  "target": "fair-housing",
+  "rules": [
+    {
+      "id": "RC-1",
+      "category": "race_color",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\bWhite private home\\b",
+        "\\bColored home\\b",
+        "\\bNegro\\b",
+        "\\bBlack\\b",
+        "\\bCaucasian\\b",
+        "\\bOriental\\b",
+        "\\bAmerican Indian\\b",
+        "\\bWhite\\b",
+        "\\bColored\\b"
+      ]
+    },
+    {
+      "id": "RL-1",
+      "category": "religion",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\bJewish home\\b",
+        "\\bProtestant\\b",
+        "\\bChristian\\b",
+        "\\bCatholic\\b",
+        "\\bJew\\b"
+      ]
+    },
+    {
+      "id": "NO-1",
+      "category": "national_origin",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\bHispanic residence\\b",
+        "\\bMexican American\\b",
+        "\\bPuerto Rican\\b",
+        "\\bPhilippine\\b",
+        "\\bPolish\\b",
+        "\\bHungarian\\b",
+        "\\bIrish\\b",
+        "\\bItalian\\b",
+        "\\bChicano\\b",
+        "\\bAfrican\\b",
+        "\\bHispanic\\b",
+        "\\bChinese\\b",
+        "\\bIndian\\b",
+        "\\bLatino\\b"
+      ]
+    },
+    {
+      "id": "FS-1",
+      "category": "familial_status",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\badult building\\b",
+        "\\badults\\b",
+        "\\bchildren\\b",
+        "\\bsingles\\b",
+        "\\bmature persons\\b"
+      ]
+    },
+    {
+      "id": "DS-1",
+      "category": "disability",
+      "verdict": "block",
+      "directions": [
+        "input",
+        "output"
+      ],
+      "patterns": [
+        "\\bcrippled\\b",
+        "\\bblind\\b",
+        "\\bdeaf\\b",
+        "\\bmentally ill\\b",
+        "\\bretarded\\b",
+        "\\bimpaired\\b",
+        "\\bhandicapped\\b",
+        "\\bphysically fit\\b"
+      ]
+    },
+    {
+      "id": "AD-2",
+      "category": "advertising_language",
+      "verdict": "redirect",
+      "directions": [
+        "input"
+      ],
+      "patterns": [
+        "\\brestricted\\b",
+        "\\bexclusive\\b",
+        "\\bprivate\\b",
+        "\\bintegrated\\b",
+        "\\btraditional\\b",
+        "\\bboard approval\\b",
+        "\\bmembership approval\\b"
+      ]
+    }
+  ]
+}
