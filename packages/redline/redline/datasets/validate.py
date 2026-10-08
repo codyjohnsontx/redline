@@ -102,7 +102,7 @@ def validate_paths(paths: Sequence[Path], targets_dir: Path | None = None) -> Va
 
 
 def _check_categories(records: list[LoadedRecord], targets_dir: Path) -> list[RecordError]:
-    """Check each record's category, secondary categories, guide rule, and citations.
+    """Check each record's categories, second-label category, guide rule, and citations.
 
     A target whose categories file cannot be loaded is reported once, at its first record.
     """
@@ -140,6 +140,16 @@ def _category_problems(record: Record, target: TargetCategories, targets_dir: Pa
                 f"secondary_categories: record {record.id!r} names category "
                 f"{secondary!r}, which is not a category in {where}"
             )
+    second = record.labels.second
+    if (
+        second is not None
+        and second.category != NO_CATEGORY
+        and second.category not in target.categories
+    ):
+        messages.append(
+            f"labels.second.category: record {record.id!r} names category "
+            f"{second.category!r}, which is not a category in {where}"
+        )
     if (
         category is not None
         and record.guide_rule is not None

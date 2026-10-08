@@ -200,6 +200,30 @@ def test_validate_rejects_unknown_secondary_category(
     assert f"{path}:3: secondary_categories: record 'fh-seed-002' names category 'familial'" in err
 
 
+def test_validate_rejects_unknown_second_label_category(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    records = sample_dicts()
+    records[0]["labels"]["second"] = {"labeler": "x", "verdict": "redirect", "category": "familial"}
+    path = write_records(records)
+    assert main(["validate", "--targets", str(TARGETS), str(path)]) == 1
+    err = capsys.readouterr().err
+    assert (
+        f"{path}:1: labels.second.category: record 'fh-seed-001' names category 'familial', "
+        f"which is not a category in {TARGETS / 'fair-housing' / 'categories.yaml'}" in err
+    )
+
+
+def test_validate_accepts_disagreeing_second_label(
+    write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
+) -> None:
+    records = sample_dicts()
+    records[0]["labels"]["second"] = {"labeler": "x", "verdict": "allow", "category": "steering"}
+    path = write_records(records)
+    assert main(["validate", "--targets", str(TARGETS), str(path)]) == 0
+    assert "ok: 3 record(s) in 1 file(s)" in capsys.readouterr().out
+
+
 @pytest.mark.parametrize("rule", ["FS-99", "RC-1"])
 def test_validate_rejects_rule_not_under_the_category(
     rule: str, write_records: WriteRecords, capsys: pytest.CaptureFixture[str]
