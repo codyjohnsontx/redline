@@ -17,6 +17,7 @@ from typing import Any
 import pytest
 
 from redline.cli import main
+from redline.datasets.categories import load_categories
 from redline.datasets.schema import Context, Direction
 from redline.evaluate import load_metrics
 from redline.judges.base import JudgeInput, Judgment
@@ -24,7 +25,6 @@ from redline.judges.keyword import KeywordJudge, KeywordRules
 
 TARGET = Path(__file__).parents[3] / "targets" / "fair-housing"
 KEYWORDS = TARGET / "keywords.json"
-CATEGORIES = TARGET / "categories.yaml"
 GUIDE = TARGET / "LABEL_GUIDE.md"
 SEEDS = TARGET / "seeds" / "examples.jsonl"
 
@@ -114,29 +114,13 @@ NEAR_MISSES = [
 
 
 def guide_rules() -> dict[str, tuple[str, str]]:
-    """Read `rule id -> (category, verdict)` from the `categories:` block of categories.yaml.
-
-    The engine has no YAML dependency, so this reads the file's fixed layout: category ids
-    at two spaces, rule ids at six, and each rule's `verdict:` at eight.
-    """
-    rules: dict[str, tuple[str, str]] = {}
-    category = rule = None
-    in_block = False
-    for line in CATEGORIES.read_text(encoding="utf-8").splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        if not line.startswith(" "):
-            in_block = line == "categories:"
-            continue
-        if not in_block:
-            continue
-        if m := re.fullmatch(r"  ([a-z_]+):", line):
-            category, rule = m.group(1), None
-        elif m := re.fullmatch(r"      ([A-Z]{2}-\d+):", line):
-            rule = m.group(1)
-        elif (m := re.fullmatch(r"        verdict: (\w+)", line)) and category and rule:
-            rules[rule] = (category, m.group(1))
-    return rules
+    """Read `rule id -> (category, verdict)` from categories.yaml, as `redline validate` does."""
+    categories = load_categories(TARGET.parent, TARGET.name).categories
+    return {
+        rule_id: (category_id, rule.verdict)
+        for category_id, category in categories.items()
+        for rule_id, rule in category.rules.items()
+    }
 
 
 def appendix_b_terms() -> set[str]:

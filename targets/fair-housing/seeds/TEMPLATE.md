@@ -53,4 +53,4 @@ Allow seed (a hard negative):
 - `labels.provisional` equals `verdict`.
 - The file validates: `uv run redline validate targets/fair-housing/seeds/*.jsonl`. CI runs the same check.
 
-`redline validate` checks the record format. It does not yet check that the category, rule, and citations exist in `categories.yaml`, so the first three bullets are on you for now.
+`redline validate` checks the record format and that the category, rule, and citations exist in `categories.yaml`, with the rule under its category. It does not check that the rule's verdict equals the seed's verdict or that each citation is one the rule lists, so those parts of the first three bullets are on you.
