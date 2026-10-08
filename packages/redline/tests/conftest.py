@@ -6,6 +6,7 @@ from typing import Any
 import pytest
 
 SAMPLES = Path(__file__).parent / "fixtures" / "samples.jsonl"
+TARGETS = Path(__file__).parents[3] / "targets"
 
 WriteRecords = Callable[[list[dict[str, Any]]], Path]
 

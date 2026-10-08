@@ -22,6 +22,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     validate = commands.add_parser("validate", help="validate JSONL dataset files")
     validate.add_argument("paths", nargs="+", type=Path, metavar="FILE")
+    validate.add_argument(
+        "--targets",
+        type=Path,
+        default=Path("targets"),
+        help="directory holding <target>/categories.yaml (default: targets)",
+    )
 
     evaluate = commands.add_parser("eval", help="run a judge over dataset files")
     evaluate.add_argument("paths", nargs="+", type=Path, metavar="FILE")
@@ -54,12 +60,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"{path}: not a file", file=sys.stderr)
         return 2
     if args.command == "validate":
-        return _validate(paths)
+        return _validate(paths, args.targets)
     return _eval(args)
 
 
-def _validate(paths: list[Path]) -> int:
-    report = validate_paths(paths)
+def _validate(paths: list[Path], targets_dir: Path) -> int:
+    if not targets_dir.is_dir():
+        print(f"{targets_dir}: not a directory", file=sys.stderr)
+        return 2
+    report = validate_paths(paths, targets_dir)
     for error in report.errors:
         print(error, file=sys.stderr)
     if not report.ok:
