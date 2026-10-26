@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars (gitignored) and fill in real values.
+
+project_id = "redline-lab-0000"
+
+# Defaults, shown for reference:
+# region                    = "us-central1"
+# github_repository         = "codyjohnsontx/redline"
+# workload_identity_pool_id = "github"
+# recaptcha_domains         = ["redline.cody-johnson.com", "localhost"]
