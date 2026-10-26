@@ -2,11 +2,11 @@
 
 Terraform for the lab's Google Cloud project. Two roots share one state bucket:
 
-- `bootstrap/` creates the project in the owner's existing billing account, the APIs Terraform itself needs, the versioned state bucket, the $25 monthly budget (alerts at 50, 90, and 100 percent of actual spend and 100 percent of forecast), and Workload Identity Federation for GitHub Actions in this repository. It is applied once, first with local state, then migrated into the bucket it creates.
+- `bootstrap/` creates the project in the owner's existing billing account, the APIs Terraform itself needs, the versioned state bucket, the $25 monthly budget (alerts at 50, 90, and 100 percent of actual spend, emailed to the billing account administrators), and Workload Identity Federation for GitHub Actions in this repository. It is applied once, first with local state, then migrated into the bucket it creates.
 - `live/` holds everything else: the lab's APIs, the service accounts and their roles, the Model Armor template, Firestore, the private results bucket, and the reCAPTCHA key. Later PRs add Cloud Run, secrets, scheduling, alerts, and hosting here.
 - `modules/` holds the pieces `live/` composes (`service-account`, `model-armor`, `firestore`).
 
-Nothing account-specific is committed. Billing account, project ID, alert email, and GitHub numeric IDs go in each root's `terraform.tfvars`, which is gitignored along with state and `*_override.tf` files. CI (`.github/workflows/terraform.yml`) runs `fmt -check`, `init -backend=false`, and `validate` on both roots; it never plans or applies.
+Nothing account-specific is committed. Billing account, project ID, and GitHub numeric IDs go in each root's `terraform.tfvars`, which is gitignored along with state and `*_override.tf` files. CI (`.github/workflows/terraform.yml`) runs `fmt -check`, `init -backend=false`, and `validate` on both roots; it never plans or applies.
 
 Spend: a budget only alerts, it never stops spend. Nothing in this PR costs money at rest beyond cents of state storage; Firestore, Model Armor, and reCAPTCHA stay inside their free allowances at lab volume. The acceptance checks below make two paid calls worth a fraction of a cent.
 
@@ -46,7 +46,7 @@ gcloud billing accounts list    # ACCOUNT_ID column -> billing_account
 gh api repos/codyjohnsontx/redline --jq '"github_repository_id = \"\(.id)\"\ngithub_repository_owner_id = \"\(.owner.id)\""'
 ```
 
-Edit `terraform.tfvars`: `billing_account`, a globally unique `project_id` (for example `redline-lab-` plus four digits), `alert_email`, and the two GitHub IDs the last command printed. The budget is in USD, so the billing account's currency must be USD.
+Edit `terraform.tfvars`: `billing_account`, a globally unique `project_id` (for example `redline-lab-` plus four digits), and the two GitHub IDs the last command printed. The budget is in USD, so the billing account's currency must be USD.
 
 ### 3. Bootstrap apply, with local state
 
@@ -105,7 +105,7 @@ Run from the repository root with `PROJECT_ID`, `STATE_BUCKET`, and `BILLING_ACC
    terraform -chdir=infra/terraform/live plan -detailed-exitcode
    ```
 
-2. The budget is visible, at $25 with its four threshold rules:
+2. The budget is visible, at $25 with its three threshold rules:
 
    ```sh
    gcloud billing budgets list --billing-account="$BILLING_ACCOUNT" --billing-project="$PROJECT_ID" \
@@ -143,11 +143,11 @@ Run from the repository root with `PROJECT_ID`, `STATE_BUCKET`, and `BILLING_ACC
 | Thing | Root | Notes |
 |---|---|---|
 | Project, billing link | bootstrap | `deletion_policy = "PREVENT"`: a destroy never deletes the project |
-| Terraform APIs (Service Usage, IAM, STS, Billing Budgets, Monitoring, Storage, ...) | bootstrap | |
+| Terraform APIs (Service Usage, IAM, STS, Billing Budgets, Storage, ...) | bootstrap | |
 | State bucket `<project>-tfstate` | bootstrap | versioned, public access prevented, keeps 10 noncurrent copies |
-| Budget and email notification channel | bootstrap | scoped to this project only |
+| Budget | bootstrap | scoped to this project only |
 | Workload identity pool `github`, provider `github-actions` | bootstrap | accepts tokens only from the pinned repository and owner IDs |
-| Lab APIs (Vertex AI, Model Armor, Firestore, reCAPTCHA Enterprise, Logging, Trace) | live | |
+| Lab APIs (Vertex AI, Model Armor, Firestore, reCAPTCHA Enterprise, Logging, Monitoring, Trace) | live | |
 | Model Armor template `fh-playground` (us-central1) | live | prompt injection and jailbreak at `MEDIUM_AND_ABOVE`, malicious URIs, basic sensitive data; responsible-AI filters off on purpose |
 | Firestore `(default)`, Native, us-central1 | live | delete protection on |
 | Results bucket `<project>-results` | live | private, versioned, noncurrent copies deleted after 30 days |

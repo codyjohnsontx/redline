@@ -36,11 +36,6 @@ variable "monthly_budget_usd" {
   default     = 25
 }
 
-variable "alert_email" {
-  description = "Email address that receives budget alerts, in addition to the billing account's administrators."
-  type        = string
-}
-
 variable "github_repository" {
   description = "GitHub repository (owner/name) whose Actions workflows may federate into the project."
   type        = string

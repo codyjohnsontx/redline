@@ -3,7 +3,6 @@
 
 billing_account            = "000000-000000-000000"
 project_id                 = "redline-lab-0000"
-alert_email                = "you@example.com"
 github_repository_id       = "000000000"
 github_repository_owner_id = "00000000"
 

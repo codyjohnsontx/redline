@@ -11,6 +11,7 @@ locals {
     "firestore.googleapis.com",
     "logging.googleapis.com",
     "modelarmor.googleapis.com",
+    "monitoring.googleapis.com",
     "recaptchaenterprise.googleapis.com",
   ]
 }

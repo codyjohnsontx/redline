@@ -10,7 +10,7 @@ resource "google_model_armor_template" "this" {
   filter_config {
     pi_and_jailbreak_filter_settings {
       filter_enforcement = "ENABLED"
-      confidence_level   = var.pi_and_jailbreak_confidence
+      confidence_level   = "MEDIUM_AND_ABOVE"
     }
 
     malicious_uri_filter_settings {
