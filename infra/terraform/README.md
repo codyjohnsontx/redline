@@ -144,12 +144,12 @@ Run from the repository root with `PROJECT_ID`, `STATE_BUCKET`, and `BILLING_ACC
 |---|---|---|
 | Project, billing link | bootstrap | `deletion_policy = "PREVENT"`: a destroy never deletes the project |
 | Terraform APIs (Service Usage, IAM, STS, Billing Budgets, Storage, ...) | bootstrap | |
-| State bucket `<project>-tfstate` | bootstrap | versioned, public access prevented, keeps 10 noncurrent copies |
+| State bucket `<project>-tfstate` | bootstrap | versioned, public access prevented |
 | Budget | bootstrap | scoped to this project only |
 | Workload identity pool `github`, provider `github-actions` | bootstrap | accepts tokens only from the pinned repository and owner IDs |
 | Lab APIs (Vertex AI, Model Armor, Firestore, reCAPTCHA Enterprise, Logging, Monitoring, Trace) | live | |
 | Model Armor template `fh-playground` (us-central1) | live | prompt injection and jailbreak at `MEDIUM_AND_ABOVE`, malicious URIs, basic sensitive data; responsible-AI filters off on purpose |
 | Firestore `(default)`, Native, us-central1 | live | delete protection on |
-| Results bucket `<project>-results` | live | private, versioned, noncurrent copies deleted after 30 days |
+| Results bucket `<project>-results` | live | private, versioned |
 | reCAPTCHA key `redline-playground` | live | score-based web key for `redline.cody-johnson.com` and `localhost` |
 | `sa-playground`, `sa-eval-runner`, `sa-github-ci` and their roles | live | `sa-github-ci` is impersonable from any workflow in the repository |

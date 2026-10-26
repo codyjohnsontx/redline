@@ -43,16 +43,5 @@ resource "google_storage_bucket" "tfstate" {
     enabled = true
   }
 
-  # Keep the ten most recent noncurrent copies of each state file.
-  lifecycle_rule {
-    condition {
-      with_state         = "ARCHIVED"
-      num_newer_versions = 10
-    }
-    action {
-      type = "Delete"
-    }
-  }
-
   depends_on = [google_project_service.bootstrap]
 }

@@ -69,14 +69,4 @@ resource "google_storage_bucket" "results" {
   versioning {
     enabled = true
   }
-
-  lifecycle_rule {
-    condition {
-      with_state                 = "ARCHIVED"
-      days_since_noncurrent_time = 30
-    }
-    action {
-      type = "Delete"
-    }
-  }
 }
