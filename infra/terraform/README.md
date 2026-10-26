@@ -8,7 +8,7 @@ Terraform for the lab's Google Cloud project. Two roots share one state bucket:
 
 Nothing account-specific is committed. Billing account, project ID, and GitHub numeric IDs go in each root's `terraform.tfvars`, which is gitignored along with state and `*_override.tf` files. CI (`.github/workflows/terraform.yml`) runs `fmt -check`, `init -backend=false`, and `validate` on both roots; it never plans or applies.
 
-Spend: a budget only alerts, it never stops spend. Nothing in this PR costs money at rest beyond cents of state storage; Firestore, Model Armor, and reCAPTCHA stay inside their free allowances at lab volume. The acceptance checks below make two paid calls worth a fraction of a cent.
+Spend: a budget only alerts, it never stops spend. Nothing these roots create costs money at rest beyond cents of state storage; Firestore, Model Armor, and reCAPTCHA stay inside their free allowances at lab volume. The acceptance checks below make two paid calls worth a fraction of a cent.
 
 ## Runbook
 
