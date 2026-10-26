@@ -1,0 +1,13 @@
+# Copy to terraform.tfvars (gitignored) and fill in real values.
+# infra/terraform/README.md shows the command that prints each one.
+
+billing_account            = "000000-000000-000000"
+project_id                 = "redline-lab-0000"
+github_repository_id       = "000000000"
+github_repository_owner_id = "00000000"
+
+# Defaults, shown for reference:
+# project_name       = "Redline Lab"
+# region             = "us-central1"
+# monthly_budget_usd = 25
+# github_repository  = "codyjohnsontx/redline"

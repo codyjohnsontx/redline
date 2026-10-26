@@ -1,0 +1,41 @@
+name: Terraform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - infra/terraform/**
+      - .github/workflows/terraform.yml
+  pull_request:
+    paths:
+      - infra/terraform/**
+      - .github/workflows/terraform.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    # Offline only: no credentials, no backend, no plan. The owner plans and
+    # applies locally (infra/terraform/README.md).
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        root: [bootstrap, live]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: hashicorp/setup-terraform@v4.0.1
+        with:
+          terraform_version: 1.17.0
+          terraform_wrapper: false
+      - name: Format
+        run: terraform fmt -check -recursive -diff infra/terraform
+      - name: Init
+        # -lockfile=readonly fails if the committed lock file does not cover
+        # the pinned provider versions.
+        run: terraform -chdir=infra/terraform/${{ matrix.root }} init -backend=false -input=false -lockfile=readonly
+      - name: Validate
+        run: terraform -chdir=infra/terraform/${{ matrix.root }} validate

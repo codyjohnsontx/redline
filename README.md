@@ -54,6 +54,10 @@ Cost and token figures are totals only when every item reported usage with a pri
 
 Two offline judges ship with the engine. `--judge keyword --rules FILE` is a regex baseline whose rules are a target's JSON file (see `packages/redline/redline/judges/keyword.py` for the format). `--judge recorded --recording FILE` replays judgments from a JSONL recording of `{"input": ..., "judgment": ...}` lines, matched by input content. A judge error counts as a miss for per-category recall and block recall. The block, redirect, and overblock rates count only what the judge actually said, so errors are left out of them; the overblock rate reports its basis's judge error rate beside it. Latency p50 and p95 cover every record whose judge call was measured, errored and timed-out calls included; a record that made no call (for example one missing from a recording) has no latency and is left out. The report states how many records were measured, how many of those errored, and how many were unmeasured.
 
+## Infrastructure
+
+The lab runs in one Google Cloud project built by Terraform under [`infra/terraform/`](infra/terraform/). Its [README](infra/terraform/README.md) is the owner's runbook: the one-time login, the bootstrap and live applies, the state migration, and the acceptance checks. CI only formats and validates the Terraform; the owner plans and applies locally.
+
 ## License
 
 Code is MIT licensed. See [LICENSE](LICENSE). Datasets under `targets/*/data/` and the label guides are licensed CC BY-NC 4.0; see [DATA_LICENSE.md](DATA_LICENSE.md). The test split is not published; see [NOTICE](NOTICE).

@@ -6,3 +6,15 @@ __pycache__/
 dist/
 build/
 results/
+
+# Terraform: local state, plugin caches, real variable files, and local override files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+*_override.tf
